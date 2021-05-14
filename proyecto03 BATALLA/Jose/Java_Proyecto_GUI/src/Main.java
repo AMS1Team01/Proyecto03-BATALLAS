@@ -41,7 +41,8 @@ class Ventana {
 	private JPanel jpUserName, jpOptions, jpCharacter, jpWeapon, jpBattleEnemy, jpImgHealthCharacter;
 	private String character, weapon;
 	private JScrollPane scrollPanelWeapon, scrollPanelCharacter;
-	private JProgressBar pbEnemyHealth, pbCharacterHealth;
+	private JProgressBar pbEnemyHealth, pbEnemyPower, pbEnemyAgility, pbEnemySpeed, pbEnemyDefense; // Enemy Stats
+	private JProgressBar pbCharacterHealth; //Character Stats
 	private ImageIcon imgCharacter;
 
 	public Ventana() {
@@ -568,6 +569,61 @@ class Ventana {
 		jpBattleEnemy.setBackground(Color.RED);
 		jpBattleEnemy.setLayout(null);		
 		
+		
+		
+		// JLabel Enemy Weapon
+		var jlEnemyWeapon = new JLabel();
+		jlEnemyWeapon.setIcon(imgWeapon);
+		jlEnemyWeapon.setBounds(265, 35, 128, 128);
+		
+		// JLabel Text Power
+		var jlEnemyPower = new JLabel("Power");
+		jlEnemyPower.setBounds(15,35, 50, 20);
+		jlEnemyPower.setBackground(Color.RED);
+		jlEnemyPower.setOpaque(true);
+		
+		// Progress Bar Enemy Power
+		pbEnemyPower = new JProgressBar(0, 10);
+		pbEnemyPower.setValue(4);
+		pbEnemyPower.setBounds(80, 39, 120, 15);
+		pbEnemyPower.setForeground(Color.RED);
+		
+		// JLabel Text Agility
+		var jlEnemyAgility = new JLabel("Agility");
+		jlEnemyAgility.setBounds(15,55, 50, 20);
+		jlEnemyAgility.setBackground(Color.RED);
+		jlEnemyAgility.setOpaque(true);
+		
+		// Progress Bar Enemy Agility
+		pbEnemyAgility = new JProgressBar(0, 10);
+		pbEnemyAgility.setValue(8);
+		pbEnemyAgility.setBounds(80, 59, 120, 15);
+		pbEnemyAgility.setForeground(Color.MAGENTA);
+		
+		// JLabel Text Speed
+		var jlEnemySpeed = new JLabel("Speed");
+		jlEnemySpeed.setBounds(15,75, 50, 20);
+		jlEnemySpeed.setBackground(Color.RED);
+		jlEnemySpeed.setOpaque(true);	
+		
+		// Progress Bar Enemy Speed
+		pbEnemySpeed = new JProgressBar(0, 10);
+		pbEnemySpeed.setValue(7);
+		pbEnemySpeed.setBounds(80, 79, 120, 15);
+		pbEnemySpeed.setForeground(Color.ORANGE);
+		
+		// JLabel Text Defense
+		var jlEnemyDefense = new JLabel("Defense");
+		jlEnemyDefense.setBounds(15,95, 50, 20);
+		jlEnemyDefense.setBackground(Color.RED);
+		jlEnemyDefense.setOpaque(true);
+		
+		// Progress Bar Enemy Defense
+		pbEnemyDefense = new JProgressBar(0, 10);
+		pbEnemyDefense.setValue(2);
+		pbEnemyDefense.setBounds(80, 99, 120, 15);
+		pbEnemyDefense.setForeground(Color.BLUE);
+		
 		// Progress Bar Enemy Health
 		pbEnemyHealth = new JProgressBar(0, 500);
 		pbEnemyHealth.setValue(50);
@@ -577,54 +633,10 @@ class Ventana {
 		pbEnemyHealth.setForeground(Color.GREEN);
 		jpBattleEnemy.add(pbEnemyHealth);
 		
-		
-//		// Progress Bar Enemy Power
-//		pbEnemyHealth = new JProgressBar(0, 10);
-//		pbEnemyHealth.setValue(4);
-////		pbEnemyHealth.setString("50/500");
-//		pbEnemyHealth.setBounds(390, 15, 145, 15);
-//		pbEnemyHealth.setStringPainted(true);
-//		pbEnemyHealth.setForeground(Color.GREEN);
-//		jpBattleEnemy.add(pbEnemyHealth);
-		
-		
-		
-		
-		// JLabel Enemy Weapon
-		var jlEnemyWeapon = new JLabel();
-		jlEnemyWeapon.setIcon(imgWeapon);
-		jlEnemyWeapon.setBounds(265, 35, 128, 128);
-		
-		
-		// JLabel Text Power
-		var jlEnemyPower = new JLabel("Power");
-		jlEnemyPower.setBounds(15,35, 100, 20);
-		jlEnemyPower.setBackground(Color.RED);
-		jlEnemyPower.setOpaque(true);
-		
-		// JLabel Text Agility
-		var jlEnemyAgility = new JLabel("Agility");
-		jlEnemyAgility.setBounds(15,55, 100, 20);
-		jlEnemyAgility.setBackground(Color.MAGENTA);
-		jlEnemyAgility.setOpaque(true);
-		
-		// JLabel Text Speed
-		var jlEnemySpeed = new JLabel("Speed");
-		jlEnemySpeed.setBounds(15,75, 100, 20);
-		jlEnemySpeed.setBackground(Color.ORANGE);
-		jlEnemySpeed.setOpaque(true);	
-		
-		// JLabel Text Defense
-		var jlEnemyDefense = new JLabel("Defense");
-		jlEnemyDefense.setBounds(15,95, 100, 20);
-		jlEnemyDefense.setBackground(Color.BLUE);
-		jlEnemyDefense.setOpaque(true);
-		
-		// JLabel EnemyImage
+		// JLabel Enemy Image
 		var jlEnemyImage = new JLabel();
 		jlEnemyImage.setIcon(imgCharacter);
 		jlEnemyImage.setBounds(395, 35, 128, 128);
-		
 		
 		
 		
@@ -635,7 +647,12 @@ class Ventana {
 		jpBattleEnemy.add(jlEnemyAgility);
 		jpBattleEnemy.add(jlEnemySpeed);
 		jpBattleEnemy.add(jlEnemyDefense);
+		jpBattleEnemy.add(pbEnemyPower);
+		jpBattleEnemy.add(pbEnemyAgility);
+		jpBattleEnemy.add(pbEnemySpeed);
+		jpBattleEnemy.add(pbEnemyDefense);
 		jpBattleEnemy.setBounds(20, 15, 550, 175);
+		
 		
 		// Character Panel---------------------------------
 		jpImgHealthCharacter = new JPanel();
@@ -662,7 +679,6 @@ class Ventana {
 		//Add elements
 		jpImgHealthCharacter.add(jlCharacterImage);
 		jpImgHealthCharacter.add(pbCharacterHealth);
-		
 		jpImgHealthCharacter.setBounds(50, 205, 175, 175);
 		
 		
