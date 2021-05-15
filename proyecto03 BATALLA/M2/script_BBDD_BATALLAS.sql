@@ -134,13 +134,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -------------------------------------------
 use batallas;
 
-insert into warriors values ( 1, "Pepe", "c://path/imagenes/humano01", 1 );
-
 /* Insercion de datos a tabla race*/
 
 insert into race values ( 1, "Human", 50, 5, 5, 6, 3);
 insert into race values ( 2, "Elf", 40, 4, 7, 7, 2);
-insert into race values ( 3, "Dwarf", 60, 6, 3, 5, 2);
+insert into race values ( 3, "Dwarf", 60, 6, 3, 5, 4);
 
 /* Insercion de datos a tabla warriors*/
 
