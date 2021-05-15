@@ -32,4 +32,4 @@ insert into weapons values ( 8, "Knife", "c://path/imagenes/Cuchillo", 4, 0, "Hu
 insert into weapons values ( 9, "Great Axe", "c://path/imagenes/Gran_hacha", 5, 0, "Dwarf");
 use batallas;
 select warrior_id, warrior_name, warriors.race_id, race_name, hp, strength, speed, agility, defense, warrior_image_path from warriors inner join race on warriors.race_id = race.race_id;
-
+select weapon_id, weapon_name, strength, speed, weapon_race, weapon_image_path from weapons;

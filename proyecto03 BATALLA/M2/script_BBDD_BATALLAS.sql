@@ -13,13 +13,13 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 DROP SCHEMA IF EXISTS `batallas` ;
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema batallas
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `batallas` DEFAULT CHARACTER SET utf8 ;
 USE `batallas` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`race`
+-- Table `batallas`.`race`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `batallas`.`race` ;
 
