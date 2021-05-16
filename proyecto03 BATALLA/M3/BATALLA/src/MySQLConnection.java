@@ -129,10 +129,83 @@ public class MySQLConnection {
 		
 	}
 	
-	// TODO Crear metodos para mostrar ranking
+	 
 	
-	// TODO Crear metodo para guardar las batallas en la base de datos 
+	/* This method creates the insert query for the player table : 
+	 * 
+	 * player_id (int), player_name(String) is what is needed 
+	 * 
+	 * TODO is possible we need to implement a method top generate a random Id for the player 
+	 * */
 	
+	public static void savePlayer(int player_id, String player_name) {
+		String insert = "Insert into players values (" + player_id + ", \"" + player_name + "\");";
+		
+	}
+	
+	/* This methos creates the inset string to save the data in the ranking table: 
+	 * 
+	 * player_id (int), total_points(Int), warrior_id(int) are the fields needed.
+	 *  
+	 * TODO we'll need to use the value created by the method to generate a random id for the player 
+	 * to match both tables */
+	
+	public static void saveToRanking(int player_id, int total_points, int warrior_id) {
+		String insert = "Insert into ranking values (" + player_id + ", " + total_points + ", " + warrior_id + ");";
+	}
+	
+	
+	
+	/* This method stores the battle data in the batallas table.
+	 * 
+	 * battle_id(int), player_id(int), warrior_id(int), weapon_id(int), opponent_id(int), 
+	 * opponent_weapon_id(int), injuries_caused(int), injuries_suffered(int), battle_points(int) are the fields needed
+	 * 
+	 * TODO use the same player_id generated for the previous methods 
+	 * 
+	 * */
+	
+	public static void saveBattleData(int battle_id, int player_id, int warrior_id, int weapon_id, 
+			int opponent_id, int opponent_weapon_id, int injuries_caused, int injuries_suffered, int battle_points) {
+		String insert = "Insert into ranking values (" 
+			+ battle_id + ", " 
+			+ player_id + ", " 
+			+ warrior_id + ", " 
+			+ weapon_id + ", " 
+			+ opponent_id + ", " 
+			+ opponent_weapon_id + ", " 
+			+ injuries_caused + ", " 
+			+ injuries_suffered + ", " 
+			+ battle_points + ");";
+	}
+	
+	/* This method executes the query needed to get the ranking details: 
+	 * position, player_name, total_points, warrior_name, player_id.
+	 * 
+	 * the result should be displayed within a GUI.
+	 * 
+	 * TODO Establish number of results shown. 
+	 * 		Establish if there will be an option(button) to show ALL existing results
+	 * 		Establish if we want to feature an option to filter ranking by player name within a search field.
+	 * 
+	 */
+	
+	public static void showRanking() {
+		int row = 0;
+		String query = "select players.player_name, ranking.total_points, warriors.warrior_name, players.player_id "
+				+ "from players "
+				+ "inner join ranking on players.player_id = ranking.player_id "
+				+ "inner join warriors on ranking.warrior_id = warriors.warrior_id;";
+		try {
+			rs = stmnt.executeQuery(query);
+			while (rs.next()) {
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("Ha ocurrido un error al realizar la consulta. Contacte con el desarrollador Pol Tell Jove");
+			e.printStackTrace();
+		}
+	}
 	
 	/* Main method as a test for the Class functionality and testing only, as it will be implemented in its own way in the main application method*/
 	

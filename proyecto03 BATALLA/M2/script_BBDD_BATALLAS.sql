@@ -73,7 +73,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `batallas`.`ranking` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`ranking` (
-  `player_id` INT NULL,
+  `player_id` INT NULL AUTO_INCREMENT,
   `total_points` INT NULL,
   `warrior_id` INT NULL,
   INDEX `player_id_idx` (`player_id` ASC) VISIBLE,
@@ -163,3 +163,5 @@ insert into weapons values ( 6, "Bow", "c://path/imagenes/Arco", 5, 1, "Elf");
 insert into weapons values ( 7, "Katana", "c://path/imagenes/Katana", 3, 2, "Human");
 insert into weapons values ( 8, "Knife", "c://path/imagenes/Cuchillo", 4, 0, "Human,Elf,Dwarf");
 insert into weapons values ( 9, "Great Axe", "c://path/imagenes/Gran_hacha", 5, 0, "Dwarf");
+
+
