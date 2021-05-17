@@ -1,0 +1,543 @@
+	String[] weapons = {"Dagger", "Sword", "Axe", "Double swords", "Scimitar", "Bow", "Katana", "Knive", "Two-handed ax"};
+
+
+
+class WeaponContainer {
+	
+	static ArrayList weapons = new ArrayList(9);
+	weapons.add("Dagger");
+	weapons.add("Sword");
+	weapons.add("Axe");
+	weapons.add("Double Swords");
+	weapons.add("Scimitar");
+	weapons.add("Bow");
+	weapons.add("Katana");
+	weapons.add("Knife");
+	weapons.add("Great Axe");
+	
+}
+
+class WarriorContainer {
+	
+	String[] warriors = {"Dagger", "Sword", "Axe", "Double swords", "Scimitar", "Bow", "Katana", "Knive", "Two-handed ax"};
+
+	
+}
+
+
+Si el pokemon que defiende ha muerto o simplemente el atacante no tiene ningun pokemon con energia para acatar, cambiamos de roles y ahora ataca primero otro jugador
+				if (pAttacker.getVelocity() + pAttacker.getWeapon().getVelocity() <= pDefender.getVelocity() + pDefender.getWeapon().getVelocity()) {
+					pDefender = pAttacker;
+					
+
+Coses a fer:					
+
+Crear classe Weapon
+Posar getDefend i getAttack a Warrior per no repetir 
+
+
+getAttack Dwarf:
+
+public int getAttack() { //Se crea el metodo getAttack
+		int damage = getStrength();
+		int speed = getVelocity();
+					
+		if (weapon == "Sword") {
+			damage += 1;
+			speed += 1;		
+		} else if (weapon == "Axe") {
+			damage += 3;
+		} else if (weapon == "Knive") {
+			speed += 4;
+		} else if (weapon == "Two-handed ax") {
+			damage += 5;
+		}
+		return damage;
+	}
+	
+	
+getAttack Human:
+
+public int getAttack() { //Se crea el metodo getAttack
+		int damage = getStrength();
+		int speed = getVelocity();
+					
+		if (weapon == "Dagger") {
+			speed += 3;
+		} else if (weapon == "Sword") {
+			damage += 1;
+			speed += 1;
+		} else if (weapon == "Axe") {
+			damage += 3;
+		} else if (weapon == "Double swords") {
+			damage += 2;
+			speed += 2;
+		} else if (weapon == "Scimitar") {
+			damage += 1;
+			speed += 2;
+		} else if (weapon == "Katana") {
+			damage += 2;
+			speed += 3;
+		} else if (weapon == "Knive") {
+			speed += 4;
+		}
+		return damage;
+	}
+	
+	
+getAttack Elf:
+
+public int getAttack() { //Se crea el metodo getAttack
+		int damage = getStrength();
+		int speed = getVelocity();
+					
+		if (weapon == "Dagger") {
+			speed += 3;
+		} else if (weapon == "Sword") {
+			damage += 1;
+			speed += 1;
+		} else if (weapon == "Double swords") {
+			damage += 2;
+			speed += 2;
+		} else if (weapon == "Scimitar") {
+			damage += 1;
+			speed += 2;
+		} else if (weapon == "Bow") {
+			damage += 1;
+			speed += 5;
+		} else if (weapon == "Knive") {
+			speed += 4;
+		}
+		return damage;
+	}
+
+
+
+warriors.add("IwoIndignao");
+warriors.add("JoseEstresao");
+warriors.add("PolSiesta");
+warriors.add("Umtiti");
+warriors.add("BocataDeAtun");
+warriors.add("PapelDePlata");
+warriors.add("ColetaDeJose");
+warriors.add("GorraDeIwo");
+warriors.add("VideosDeJordi");
+warriors.add("KahootsDeXavi");
+
+weapons = new ArrayList<String>();
+weapons.add("Dagger");
+weapons.add("Sword");
+weapons.add("Axe");
+weapons.add("Double swords");
+weapons.add("Scimitar");
+weapons.add("Bow");
+weapons.add("Katana");
+weapons.add("Knive");
+weapons.add("Two-handed ax");
+
+
+
+class User{ //Se crea la clase User
+	//Se definen los atributos de User
+	private String nickName;
+	private Warrior warrior;
+	private Weapon weapon;
+	
+	public User(String nickName, Warrior warrior, Weapon weapon) { //Se crea el constructor
+		super();
+		this.nickName = nickName;
+		this.warrior = warrior;
+		this.weapon = weapon;
+	}
+	//Se definen los getters y setters de User
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public Warrior getWarrior() {
+		return warrior;
+	}
+	public void setWarrior(Warrior warrior) {
+		this.warrior = warrior;
+	}
+	public Weapon getWeapon() {
+		return weapon;
+	}
+	public void setWeapon(Weapon weapon) {
+		this.weapon = weapon;
+	}
+	
+}
+
+
+
+
+//Se pide el nombre del usuario
+		System.out.println("El nombre del jugador: ");
+		String nickNamePlayer = input.next();
+		
+			
+		//Se crea el bot y se le asigna un nombre y un arma aleatorios de las ArrayList warriors y weapons
+		String nickName = "Bot";
+		if (nickName == nickNamePlayer) {
+			nickName = "CPU";
+		}
+		User bot = new User(nickName, allWarriors.get(randomNumber.nextInt(11)), allWeapons.get(randomNumber.nextInt(8)));
+		System.out.println(new String(new char[41]).replace("\0","=") + "BATALLA" + new String(new char[41]).replace("\0","="));
+				
+		//Se crea el usuario
+		nickName = nickNamePlayer;
+		User player = new User(nickName, allWarriors.get(), allWeapons.get(randomNumber.nextInt(8)));
+		ArrayList<User> players = new ArrayList<User>();
+		Warrior pAttacker;
+		Warrior pDefender;
+		while (true) {
+			//Se imprime el menu utilizando una array, porque cuando acaba la primera partida se anyade la opcion de repetir 
+			for (String optionMenu : menu) {
+				System.out.println(menu.indexOf(optionMenu)+1 + ". " + optionMenu);
+			}
+			
+			//Se comprueba lo que pone el usuario. Si no es correcto, sale el mensaje de error correspondiente
+			if (input.hasNextInt()) {
+	        	int optionMenu  = input.nextInt();
+	        	if (optionMenu == 1) {
+	        		System.out.println("\nTu oponente va ser el " + bot.getNickName());
+	        		
+	        		//Se crea el equipo del usuario
+    				if (warrior.race_id == 1) {
+    					player.setWarrior(new Dwarf(input.next()));
+    				} else if (warrior.race_id == 2) {
+    					player.setWarrior(new Human(input.next()));
+    				} else {
+    					player.setWarrior(new Elf(input.next()));
+    				}
+    				
+	    		
+    				//Creamos el equipo del bot
+	        		do {
+	        			int warriorId = (int)(Math.random()*11 + 1);
+	        		}
+	        		while (warriorId == warriorPlayerId);
+	        		
+	    			if (warrior(warriorId).race_id == 1) {
+    					bot.setWarrior(new Dwarf(input.next()));
+	    			} else if (warrior(warriorId).race_id == 2) {
+    					bot.setWarrior(new Human(input.next()));
+    				} else {
+    					bot.setWarrior(new Elf(input.next()));
+    				}
+	    				
+
+	    			//Elegimos quien va atacar por el metodo de quien mas velocidad tiene
+	    			if(player.getWarrior().getVelocity() + player.getWeapon().getVelocity() > bot.getWarrior().getVelocity() + bot.getWeapon().getVelocity()) {
+	    				players.add(player);
+	    				players.add(bot);
+	    			} else if(player.getWarrior().getVelocity() + player.getWeapon().getVelocity() < bot.getWarrior().getVelocity() + bot.getWeapon().getVelocity()) {
+	    				players.add(bot);
+	    				players.add(player);
+	    			} else {
+	    				if(player.getWarrior().getAgility() > bot.getWarrior().getAgility()) {
+		    				players.add(player);
+		    				players.add(bot);
+		    			} else if(player.getWarrior().getAgility() < bot.getWarrior().getAgility()) {
+		    				players.add(bot);
+		    				players.add(player);
+		    			} else {
+		    				int numRandom = (int)(Math.random()*2);
+		    				if (numRandom == 1) {
+		    					players.add(player);
+			    				players.add(bot);
+		    				} else {
+		    					players.add(bot);
+			    				players.add(player);
+		    				}
+		    			}
+	    			}
+	    		//Opcion de salir
+	        	}else if(optionMenu == 4) {
+	        		break;
+	        	
+	        	//}else if(optionMenu == 2 && menu.size() == 3) {
+	        		
+	        	//Mensaje de numero incorrecto
+	        	}else {
+	        		System.out.println("No existe la opcion " + optionMenu);
+	        		continue;
+	        	}
+			//Mensaje de que lo que ha puesto el usuario no es un numero
+			}else {
+				System.out.println("Debe ser un numero, la opcion " + input.next() + " no es valida!");
+				continue;
+			}
+						
+			int turn = 0;
+			boolean called1 = false;
+			boolean called2 = false;
+			//Mientras los dos pokemons tienen vida, atacan uno a otro
+			turn++;
+			System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+			System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			//Comprobamos  que el pokemon defensor  no ha muerto del ataque anterior y puede atacar
+			
+			while (pDefender.getLife() > 0 & pAttacker.getLife() > 0) {
+				turn++;	
+				if (pAttacker.getVelocity() + pAttacker.getWeapon().getVelocity() <= pDefender.getVelocity() + pDefender.getWeapon().getVelocity()) {
+					System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+					Warrior aux = pAttacker;
+					pAttacker = pDefender;
+					pDefender = aux;
+				} else {
+					int numRandom = (int)(Math.random()*101);
+					if (((pAttacker.getVelocity() + pAttacker.getWeapon().getVelocity()) - (pDefender.getVelocity() + pDefender.getWeapon().getVelocity()))*10 > numRandom) {
+						System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+					} else {
+						System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+						Warrior aux = pAttacker;
+						pAttacker = pDefender;
+						pDefender = aux;
+					}		
+				}
+				System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			
+			}
+				
+		}
+	
+		//El ganador
+		if (player.getWarrior().getLife() > bot.getWarrior().getLife()) {
+		System.out.println("\nHa ganado " + player.getNickName() + "\n");
+		}else {
+		System.out.println("\nHa ganado " + bot.getNickName() + "\n");
+		}
+		System.out.println("Resum del combat");
+		//Opcio tornar a inici o finalitzar aplicacio
+	}
+	
+}
+
+
+
+
+while (pDefender.getLife() > 0 & pAttacker.getLife() > 0) {
+				turn++;	
+				if (pAttacker.getVelocity() + pAttacker.getWeapon().getVelocity() <= pDefender.getVelocity() + pDefender.getWeapon().getVelocity()) {
+					System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+					Warrior aux = pAttacker;
+					pAttacker = pDefender;
+					pDefender = aux;
+				} else {
+					int numRandom = (int)(Math.random()*101);
+					if (((pAttacker.getVelocity() + pAttacker.getWeapon().getVelocity()) - (pDefender.getVelocity() + pDefender.getWeapon().getVelocity()))*10 > numRandom) {
+						System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+					} else {
+						System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+						Warrior aux = pAttacker;
+						pAttacker = pDefender;
+						pDefender = aux;
+					}		
+				}
+				System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			
+			}
+			
+			
+			
+public static void main(String[] args) {
+		
+		//Instanciar WarriorContainer
+		var wac = new WarriorContainer();
+		var allWarriors = wac.getWarriors();
+		
+		//Instanciar WeaponContainer
+		var wec = new WeaponContainer();
+		var allWeapons = wec.getWeapons();
+		
+		//Instanciar Random
+		Random randomNumber = new Random();
+		
+		//Se crean las arrays y variables que se van a utilizar
+		Scanner input = new Scanner(System.in);
+		ArrayList<String> menu = new ArrayList<String>();
+		menu.add("Play");
+		menu.add("Choose warrior");
+		menu.add("Choose weapon");
+		menu.add("Exit");
+		
+		//Se pide datos del usuario
+		String nickNamePlayer = input.next();		
+			
+		//Se crea el bot y se le asigna un nombre y un arma aleatorios de las ArrayList warriors y weapons
+		String nickName = "Bot";
+		if (nickName == nickNamePlayer) {
+			nickName = "CPU";
+		}
+		User bot = new User(nickName, allWarriors.get(randomNumber.nextInt(11)), allWeapons.get(randomNumber.nextInt(8)));
+		System.out.println(new String(new char[41]).replace("\0","=") + "BATALLA" + new String(new char[41]).replace("\0","="));
+				
+		//Se crea el usuario
+		nickName = nickNamePlayer;
+		User player = new User(nickName, allWarriors.get(), allWeapons.get(randomNumber.nextInt(8)));
+		ArrayList<User> players = new ArrayList<User>();
+		Warrior pAttacker;
+		Warrior pDefender;
+		while (true) {
+			//Se imprime el menu utilizando una array, porque cuando acaba la primera partida se anyade la opcion de repetir 
+			for (String optionMenu : menu) {
+				System.out.println(menu.indexOf(optionMenu)+1 + ". " + optionMenu);
+			}
+			
+			//Se comprueba lo que pone el usuario. Si no es correcto, sale el mensaje de error correspondiente
+			if (input.hasNextInt()) {
+	        	int optionMenu  = input.nextInt();
+	        	if (optionMenu == 1) {
+	        		System.out.println("\nTu oponente va ser el " + bot.getNickName());
+	        		
+	        		//Se crea el equipo del usuario
+    				if (warrior.race_id == 1) {
+    					player.setWarrior(new Dwarf(input.next()));
+    				} else if (warrior.race_id == 2) {
+    					player.setWarrior(new Human(input.next()));
+    				} else {
+    					player.setWarrior(new Elf(input.next()));
+    				}
+    				
+	    		
+    				//Creamos el equipo del bot
+	        		do {
+	        			int warriorId = (int)(Math.random()*11 + 1);
+	        		}
+	        		while (warriorId == warriorPlayerId);
+	        		
+	    			if (warrior(warriorId).race_id == 1) {
+    					bot.setWarrior(new Dwarf(input.next()));
+	    			} else if (warrior(warriorId).race_id == 2) {
+    					bot.setWarrior(new Human(input.next()));
+    				} else {
+    					bot.setWarrior(new Elf(input.next()));
+    				}
+	    				
+
+	    			//Elegimos quien va atacar por el metodo de quien mas velocidad tiene
+	    			if(player.getWarrior().getVelocity() + player.getWeapon().getVelocity() > bot.getWarrior().getVelocity() + bot.getWeapon().getVelocity()) {
+	    				players.add(player);
+	    				players.add(bot);
+	    			} else if(player.getWarrior().getVelocity() + player.getWeapon().getVelocity() < bot.getWarrior().getVelocity() + bot.getWeapon().getVelocity()) {
+	    				players.add(bot);
+	    				players.add(player);
+	    			} else {
+	    				if(player.getWarrior().getAgility() > bot.getWarrior().getAgility()) {
+		    				players.add(player);
+		    				players.add(bot);
+		    			} else if(player.getWarrior().getAgility() < bot.getWarrior().getAgility()) {
+		    				players.add(bot);
+		    				players.add(player);
+		    			} else {
+		    				int numRandom = (int)(Math.random()*2);
+		    				if (numRandom == 1) {
+		    					players.add(player);
+			    				players.add(bot);
+		    				} else {
+		    					players.add(bot);
+			    				players.add(player);
+		    				}
+		    			}
+	    			}
+	    		//Opcion de salir
+	        	}else if(optionMenu == 4) {
+	        		break;
+	        	
+	        	//}else if(optionMenu == 2 && menu.size() == 3) {
+	        		
+	        	//Mensaje de numero incorrecto
+	        	}else {
+	        		System.out.println("No existe la opcion " + optionMenu);
+	        		continue;
+	        	}
+			//Mensaje de que lo que ha puesto el usuario no es un numero
+			}else {
+				System.out.println("Debe ser un numero, la opcion " + input.next() + " no es valida!");
+				continue;
+			}
+						
+			int turn = 0;
+			boolean called1 = false;
+			boolean called2 = false;
+			//Mientras los dos pokemons tienen vida, atacan uno a otro
+			turn++;
+			System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+			System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			//Comprobamos  que el pokemon defensor  no ha muerto del ataque anterior y puede atacar
+			
+			while (pDefender.getLife() > 0 & pAttacker.getLife() > 0) {
+				turn++;	
+				if (pAttacker.getSpeed() <= pDefender.getSpeed()) {
+					System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+					Warrior aux = pAttacker;
+					pAttacker = pDefender;
+					pDefender = aux;
+				} else {
+					int numRandom = (int)(Math.random()*101);
+					if ((pAttacker.getSpeed() - pDefender.getSpeed())*10 > numRandom) {
+						System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+					} else {
+						System.out.println(pAttacker.getDefend(pDefender, pDefender.getAttack()));
+						Warrior aux = pAttacker;
+						pAttacker = pDefender;
+						pDefender = aux;
+					}		
+				}
+				System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			
+			}
+				
+		}
+	
+		//El ganador
+		if (player.getWarrior().getLife() > bot.getWarrior().getLife()) {
+		System.out.println("\nHa ganado " + player.getNickName() + "\n");
+		}else {
+		System.out.println("\nHa ganado " + bot.getNickName() + "\n");
+		}
+		System.out.println("Resum del combat");
+		//Opcio tornar a inici o finalitzar aplicacio
+	}
+	
+	
+	
+//Elegimos quien va atacar por el metodo de quien mas velocidad tiene
+			if(pAttacker.getSpeed() > pDefender.getSpeed()) {
+				players.add(pAttacker);
+				players.add(pDefender);
+			} else if(pAttacker.getSpeed() < pDefender.getSpeed()) {
+				players.add(pDefender);
+				players.add(pAttacker);
+			} else {
+				if(pAttacker.getAgility() > pDefender.getAgility()) {
+					players.add(pAttacker);
+					players.add(pDefender);
+				} else if(pAttacker.getAgility() < pDefender.getAgility()) {
+					players.add(pDefender);
+					players.add(pAttacker);
+				} else {
+					int numRandom = (int)(Math.random()*2);
+					if (numRandom == 1) {
+						players.add(pAttacker);
+	    				players.add(pDefender);
+					} else {
+						players.add(pDefender);
+	    				players.add(pAttacker);
+					}
+				}
+			}
+	    	int turn = 0;
+			boolean called1 = false;
+			boolean called2 = false;
+			//Mientras los dos pokemons tienen vida, atacan uno a otro
+			turn++;
+			System.out.println(pDefender.getDefend(pAttacker, pAttacker.getAttack()));
+			System.out.println("\n" + new String(new char[65]).replace("\0","*"));
+			//Comprobamos  que el pokemon defensor  no ha muerto del ataque anterior y puede atacar
+			
+			
