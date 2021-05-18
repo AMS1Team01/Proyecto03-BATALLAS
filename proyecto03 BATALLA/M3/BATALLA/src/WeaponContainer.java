@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class WeaponContainer {
 
-    private ArrayList<Weapon> weapons;
+    ArrayList<Weapon> weapons;
     
     public WeaponContainer() {
         

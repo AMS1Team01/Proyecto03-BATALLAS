@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class WarriorContainer {
 
-    private ArrayList<Warrior> warriors;
+    ArrayList<Warrior> warriors;
     
     
     public WarriorContainer() {

@@ -22,7 +22,8 @@ USE `batallas` ;
 -- Table `batallas`.`race`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `batallas`.`race` ;
-
+/* In this table we did not implemet AUTO_INCREMENT because we need to control some program restrictions related to this primary key, 
+ and we prefered to assign this value manually */
 CREATE TABLE IF NOT EXISTS `batallas`.`race` (
   `race_id` INT NOT NULL,
   `race_name` VARCHAR(200) NULL,
@@ -41,7 +42,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `batallas`.`warriors` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`warriors` (
-  `warrior_id` INT NOT NULL,
+  `warrior_id` INT NOT NULL AUTO_INCREMENT,
   `warrior_name` VARCHAR(200) NULL,
   `warrior_image_path` VARCHAR(200) NULL,
   `race_id` INT NULL,
@@ -54,14 +55,13 @@ CREATE TABLE IF NOT EXISTS `batallas`.`warriors` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `batallas`.`players`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `batallas`.`players` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`players` (
-  `player_id` INT NOT NULL,
+  `player_id` INT NOT NULL AUTO_INCREMENT,
   `player_name` VARCHAR(200) NULL,
   PRIMARY KEY (`player_id`))
 ENGINE = InnoDB;
@@ -73,7 +73,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `batallas`.`ranking` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`ranking` (
-  `player_id` INT NULL AUTO_INCREMENT,
+  `player_id` INT NOT NULL,
   `total_points` INT NULL,
   `warrior_id` INT NULL,
   INDEX `player_id_idx` (`player_id` ASC) VISIBLE,
@@ -97,7 +97,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `batallas`.`weapons` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`weapons` (
-  `weapon_id` INT NOT NULL,
+  `weapon_id` INT NOT NULL AUTO_INCREMENT,
   `weapon_name` VARCHAR(200) NULL,
   `weapon_image_path` VARCHAR(200) NULL,
   `strength` INT NULL,
@@ -113,7 +113,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `batallas`.`battles` ;
 
 CREATE TABLE IF NOT EXISTS `batallas`.`battles` (
-  `battle_id` INT NOT NULL,
+  `battle_id` INT NOT NULL AUTO_INCREMENT,
   `player_id` INT NULL,
   `warrior_id` INT NULL,
   `weapon_id` INT NULL,
@@ -142,26 +142,29 @@ insert into race values ( 3, "Dwarf", 60, 6, 3, 5, 4);
 
 /* Insercion de datos a tabla warriors*/
 
-insert into warriors values ( 1, "NombreGuerrero1", "c://path/imagenes/humano01", 1);
-insert into warriors values ( 2, "NombreGuerrero2", "c://path/imagenes/humano02", 1);
-insert into warriors values ( 3, "NombreGuerrero3", "c://path/imagenes/humano03", 1);
-insert into warriors values ( 4, "NombreGuerrero4", "c://path/imagenes/elfo01", 2);
-insert into warriors values ( 5, "NombreGuerrero5", "c://path/imagenes/elfo02", 2);
-insert into warriors values ( 6, "NombreGuerrero6", "c://path/imagenes/elfo03", 2);
-insert into warriors values ( 7, "NombreGuerrero7", "c://path/imagenes/enano01", 3);
-insert into warriors values ( 8, "NombreGuerrero8", "c://path/imagenes/enano02", 3);
-insert into warriors values ( 9, "NombreGuerrero9", "c://path/imagenes/enano03", 3);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero1", "c://path/imagenes/humano01", 1);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero2", "c://path/imagenes/humano02", 1);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero3", "c://path/imagenes/humano03", 1);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero4", "c://path/imagenes/elfo01", 2);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero5", "c://path/imagenes/elfo02", 2);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero6", "c://path/imagenes/elfo03", 2);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero7", "c://path/imagenes/enano01", 3);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero8", "c://path/imagenes/enano02", 3);
+insert into warriors (warrior_name, warrior_image_path, race_id) values ( "NombreGuerrero9", "c://path/imagenes/enano03", 3);
 
 /* Insercion de datos a tabla weapons*/
 
-insert into weapons values ( 1, "Dagger", "c://path/imagenes/daga", 3, 0, "Human,Elf");
-insert into weapons values ( 2, "Sword", "c://path/imagenes/Espada", 1, 1, "Human,Elf,Dwarf");
-insert into weapons values ( 3, "Axe", "c://path/imagenes/Hacha", 3, 0, "human,Dwarf");
-insert into weapons values ( 4, "DoubleSwords", "c://path/imagenes/Doubles", 2, 2, "Human,Elf");
-insert into weapons values ( 5, "Scimitar", "c://path/imagenes/Cimitarra", 2, 1, "Human,Elf");
-insert into weapons values ( 6, "Bow", "c://path/imagenes/Arco", 5, 1, "Elf");
-insert into weapons values ( 7, "Katana", "c://path/imagenes/Katana", 3, 2, "Human");
-insert into weapons values ( 8, "Knife", "c://path/imagenes/Cuchillo", 4, 0, "Human,Elf,Dwarf");
-insert into weapons values ( 9, "Great Axe", "c://path/imagenes/Gran_hacha", 5, 0, "Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Dagger", "c://path/imagenes/daga", 3, 0, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Sword", "c://path/imagenes/Espada", 1, 1, "Human,Elf,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Axe", "c://path/imagenes/Hacha", 3, 0, "human,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Double Swords", "c://path/imagenes/Doubles", 2, 2, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Scimitar", "c://path/imagenes/Cimitarra", 2, 1, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Bow", "c://path/imagenes/Arco", 5, 1, "Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Katana", "c://path/imagenes/Katana", 3, 2, "Human");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Knife", "c://path/imagenes/Cuchillo", 4, 0, "Human,Elf,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Great Axe", "c://path/imagenes/Gran_hacha", 5, 0, "Dwarf");
 
 
+select players.player_name, ranking.total_points, warriors.warrior_name, players.player_id from players inner join ranking on players.player_id = ranking.player_id inner join warriors on ranking.warrior_id = warriors.warrior_id order by total_points desc;
+select * from players;
+select * from battles;

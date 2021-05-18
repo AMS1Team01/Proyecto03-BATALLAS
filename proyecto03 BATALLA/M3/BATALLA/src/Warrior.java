@@ -1,6 +1,7 @@
+import java.util.Random;
 
-
-
+/* Warrior Class made to instance the Warrior objects and the methods tied to the characters.
+ * */
 abstract class Warrior extends WarriorContainer { //Se crea la clase abstracta Pokemon implementando las interfaces Attackable y Defendible
 	//Se definen los atributos de Pokemon
 	private int warrior_id;
@@ -105,91 +106,107 @@ abstract class Warrior extends WarriorContainer { //Se crea la clase abstracta P
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
-
+	
+	/*This method sets back the life points to the maximum*/
 	public void resetStats() {
 		this.setLife(this.getStartingLife());
 	}
 	
-	public String getDefend(Warrior enemy, int enemyAttack) { //Se crea el metodo getDefend de la interface Defendible
+	/*This method handles the probabilities of both launching an attack and defending that attack. 
+	 * If attack is successfully launched and is not defended, damage will be dealt.
+	 * 
+	 * The damage is calculated by the difference between attacker's enemyAtttack and a 
+	 * random defense within the defender's defense attribute range.
+	 * */
+	public String getDefend(Warrior enemy, int enemyAttack) { //Defending function
+		Random randomNumber = new Random();
 		
-		int attackDamage = 0;//El danyo final
-		String phrase = "";//El mensaje
+		int attackDamage = 0;//value to store the final damage
+		String phrase = "";// value to store the appropriate output.
 		
-		//Si el numero aleatorio es mayor o igual que la precision, el ataque falla
+		//If the random number is equal or higher than the precision, the attack fails.
 		int precision = enemy.getAgility()*10;
+		System.out.println("Attacker's precision is: " + precision );
 		if ((int)(Math.random()*101) >= precision) {
-			phrase = enemy.getName() + " ha fallado el ataque";
-		} else {//Si no falla, depende de clase que nos ataca calculamos el danyo y damos el mensaje
-			phrase = enemy.getName() + " ha acertado el ataque";
+			phrase = enemy.getName() + " can't find an opening to attack!";
+		} else {//If is successfull, we calculate the damage regarding the race and weapon.
+			phrase = enemy.getName() + " is attacking!";
 			
-			//Si el numero aleatorio es mayor o igual que la precision, el ataque falla
+			/* If the random number is is equal or higher than the evasion, 
+			 the attack is defended and deals no damage.*/
 			int evasion = this.getAgility();
+			System.out.println("Defender's evasion is: " + evasion);
 			if ((int)(Math.random()*51) < evasion) {
-				phrase += "\n" + this.getName() + " ha esquivado el ataque";
-			} else {//Si no falla, depende de clase que nos ataca calculamos el danyo y damos el mensaje
-				attackDamage = enemyAttack - this.getDefense();
-				phrase += "\nThe defender " + this.getName() + " ha recibido " + attackDamage + " puntos de danyo";
+				phrase += "\n" + this.getName() + " dodged!";
+			} else {// If success, we calculate the final damage using the attack damage and the defense
+				int defense = randomNumber.nextInt(this.getDefense());
+				attackDamage = enemyAttack - defense;
+				phrase += "\nHIT! " + this.getName() + " lost " + attackDamage + " life points";
 				
 				int lifePoints = this.getLife() - attackDamage;
 				this.setLife(lifePoints);
 								
 				if (lifePoints <= 0) {//Si el danyo es mayor que los puntos de vida que tiene el defensor ponemos vida = 0 y damos el mensaje
 					this.setLife(0);
-					phrase += "\nAttacker's life: " + enemy.getLife();
-					phrase += "\nDefender's life: " + this.getLife();
-					phrase += "\n" + this.getName() + " se ha debilitado";
+					phrase += "\n"+ enemy.getName() +"'s life: " + enemy.getLife();
+					phrase += "\n"+ this.getName() +"'s life: " + this.getLife();
+					phrase += "\n" + this.getName() + " is DEAD!!";
 				} else {
-					phrase += "\nAttacker's life: " + enemy.getLife();
-					phrase += "\nDefender's life: " + this.getLife();
+					phrase += "\n"+ enemy.getName() +"'s life: " + enemy.getLife();
+					phrase += "\n"+ this.getName() +"'s life: " + this.getLife();
 				}
 				}
-		
 		}
-		
 		return phrase;
 		
 	}
 	
-	public int getAttack() { //Se crea el metodo getAttack
-		int damage = getStrength();
-					
-		if (this.getWeapon().getName() == "Sword") {
-			damage += 1;	
-		} else if (this.getWeapon().getName() == "Axe") {
-			damage += 3;
-		} else if (this.getWeapon().getName() == "Double Swords") {
-			damage += 2;
-		} else if (this.getWeapon().getName() == "Scimitar") {
-			damage += 1;
-		} else if (this.getWeapon().getName() == "Bow") {
-			damage += 1;
-		} else if (this.getWeapon().getName() == "Katana") {
-			damage += 1;
-		} else if (this.getWeapon().getName() == "Two-handed ax") {
-			damage += 5;
-		}
+	/* This function returns the total attack value which is the sum of warrior and weapon strength attributes*/
+	public int getAttack() { //Attack function
+		int damage = this.getStrength() + this.getWeapon().getStrength();
+		System.out.println("Este personaje " + this.getName() + " hace " + damage + " puntos de danyo");
 		return damage;
+					
+//		if (this.getWeapon().getName() == "Sword") {
+//			damage += 1;	
+//		} else if (this.getWeapon().getName() == "Axe") {
+//			damage += 3;
+//		} else if (this.getWeapon().getName() == "Double Swords") {
+//			damage += 2;
+//		} else if (this.getWeapon().getName() == "Scimitar") {
+//			damage += 1;
+//		} else if (this.getWeapon().getName() == "Bow") {
+//			damage += 1;
+//		} else if (this.getWeapon().getName() == "Katana") {
+//			damage += 1;
+//		} else if (this.getWeapon().getName() == "Two-handed ax") {
+//			damage += 5;
+//		}
+//		return damage;
 	}
 	
+	/* This function returns the total speed value which is the sum of warrior and weapon velocity attributes*/
 	public int getSpeed() { //Se crea el metodo getSpeed
-		int speed = getVelocity();
-		
-		if (this.getWeapon().getName() == "Dagger") {
-			speed += 3;	
-		} else if (this.getWeapon().getName() == "Sword") {
-			speed += 1;
-		} else if (this.getWeapon().getName() == "Double Swords") {
-			speed += 2;
-		} else if (this.getWeapon().getName() == "Scimitar") {
-			speed += 2;
-		} else if (this.getWeapon().getName() == "Bow") {
-			speed += 5;
-		} else if (this.getWeapon().getName() == "Katana") {
-			speed += 3;
-		} else if (this.getWeapon().getName() == "Knive") {
-			speed += 4;
-		}
+		int speed = this.getVelocity() + this.getWeapon().getVelocity();
+		System.out.println( "este personaje " + this.getName() + " tiene : " + speed + " Velocidad.");
 		return speed;
+		
+//		if (this.getWeapon().getName() == "Dagger") {
+//			speed += 3;	
+//		} else if (this.getWeapon().getName() == "Sword") {
+//			speed += 1;
+//		} else if (this.getWeapon().getName() == "Double Swords") {
+//			speed += 2;
+//		} else if (this.getWeapon().getName() == "Scimitar") {
+//			speed += 2;
+//		} else if (this.getWeapon().getName() == "Bow") {
+//			speed += 5;
+//		} else if (this.getWeapon().getName() == "Katana") {
+//			speed += 3;
+//		} else if (this.getWeapon().getName() == "Knive") {
+//			speed += 4;
+//		}
+//		return speed;
 	}
 
 	
