@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.Random;
-
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.Math.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 
 
 public class Testing {
@@ -172,6 +173,8 @@ public class Testing {
 		
 		//Opcio tornar a inici o finalitzar aplicacio
 	}
+
+
 	
 }
 	

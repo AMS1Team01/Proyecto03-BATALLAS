@@ -154,17 +154,18 @@ insert into warriors (warrior_name, warrior_image_path, race_id) values ( "Nombr
 
 /* Insercion de datos a tabla weapons*/
 
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Dagger", "c://path/imagenes/daga", 3, 0, "Human,Elf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Sword", "c://path/imagenes/Espada", 1, 1, "Human,Elf,Dwarf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Axe", "c://path/imagenes/Hacha", 3, 0, "human,Dwarf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Double Swords", "c://path/imagenes/Doubles", 2, 2, "Human,Elf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Scimitar", "c://path/imagenes/Cimitarra", 2, 1, "Human,Elf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Bow", "c://path/imagenes/Arco", 5, 1, "Elf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Katana", "c://path/imagenes/Katana", 3, 2, "Human");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Knife", "c://path/imagenes/Cuchillo", 4, 0, "Human,Elf,Dwarf");
-insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Great Axe", "c://path/imagenes/Gran_hacha", 5, 0, "Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Dagger", "Weapons/Dagger.png", 0, 3, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Sword", "Weapons/Sword.png", 1, 1, "Human,Elf,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Axe", "Weapons/Axe.png", 3, 0, "human,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Double Swords", "Weapons/DoubleSwords.png", 2, 2, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Scimitar", "Weapons/Scimitar.png", 1, 2, "Human,Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Bow", "Weapons/Bow.png", 1, 5, "Elf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Katana", "Weapons/Katana.png", 2, 3, "Human");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Knife", "Weapons/Knife.png", 0, 4, "Human,Elf,Dwarf");
+insert into weapons (weapon_name, weapon_image_path, strength, speed, weapon_race) values ( "Great Axe", "Weapons/GreatAxe.png", 5, 0, "Dwarf");
 
-
+update ranking set total_points = 12999 where player_id = 19;
 select players.player_name, ranking.total_points, warriors.warrior_name, players.player_id from players inner join ranking on players.player_id = ranking.player_id inner join warriors on ranking.warrior_id = warriors.warrior_id order by total_points desc;
 select * from players;
 select * from battles;
+select * from weapons;

@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -51,6 +53,7 @@ public class Batalla {
 		}
 	}
 	
+	
 	/*This method stores all the fight loop methods and functions.
 	 * works with order and turn values as the attacks are not tied 
 	 * to turn, as the characters have the chance to attack again 
@@ -62,16 +65,20 @@ public class Batalla {
 		int order = 0;
 		while (player.getLife() > 0 & bot.getLife() > 0) {
 			turn++;	
+			boolean juega = false;
 			System.out.println("Turn " + turn);
 			System.out.println("Order " + order);
 			if (order%2 == 0) {
+				Thread.currentThread().interrupt();
 				playTurn(player, bot);	
 				order = changeTurn(player, bot, order, turn);
-			} 
+//				
+			}
 			if (order%2 == 1 && (player.getLife() > 0 & bot.getLife() > 0)) {
 				turn++;
 				System.out.println("Turn " + turn);
 				System.out.println("Order " + order);
+				Thread.currentThread().interrupt();
 				playTurnBot(bot, player);
 				order = changeTurnBot(bot, player, order, turn);
 			}
@@ -197,8 +204,13 @@ public class Batalla {
 				bot = warriors.get(index);
 			}
 			
+		
 			index = randomNumber.nextInt(9);
 			bot.setWeapon(weapons.get(index));
+			while (!bot.getWeapon().getWeapon_race().contains(bot.getRace())) {
+				index = randomNumber.nextInt(9);
+				bot.setWeapon(weapons.get(index));
+			}
 			
 			System.out.println("The player selected is: " + player.toString());
 			System.out.println("The opponent is " + bot.toString());
@@ -248,5 +260,7 @@ public class Batalla {
 		
 		
 	}
+
+
 
 }
