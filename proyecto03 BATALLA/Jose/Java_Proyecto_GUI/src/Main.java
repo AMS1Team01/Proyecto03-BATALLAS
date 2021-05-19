@@ -7,6 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -29,30 +32,58 @@ import javax.swing.WindowConstants;
 public class Main {
 
 	public static void main(String[] args) {
-		new Ventana();
+
+		new MySQLConnection(MySQLConnection.urlDatos, MySQLConnection.usuario, MySQLConnection.pass);
+
+		ArrayList<Warrior> warriors = new ArrayList<Warrior>();
+		MySQLConnection.fillWarriorContainer(new WarriorContainer(warriors));
+		// System.out.println(warriors.toString());
+		ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+		MySQLConnection.fillWeaponContainer(new WeaponContainer(weapons));
+		new Ventana(warriors, weapons);
 	}
 }
 
 class Ventana {
-
+	private Warrior player, bot;
+	private Random randomNumber = new Random();
 	private JFrame jfUserName, jfOptions, jfCharacter, jfWeapon, jfBattle, jfRanking;
 	private JButton jbEnter, jbRanking, jbExit;
 	private JButton jbClose;
 	private JButton jbPlay, jbCharacter, jbWeapon, jbBack; // Option Panel
-	private JButton jbDwarf1, jbDwarf2, jbDwarf3, jbHuman1, jbHuman2, jbHuman3, jbElf1, jbElf2, jbElf3; // Option Characters
-	private JButton jbDagger, jbSword, jbAxe, jbDoubleSwords, jbScimitar, jbBow, jbKatana, jbKnife, jbGreatAxe; // Option Weapons
+	private JButton jbDwarf1, jbDwarf2, jbDwarf3, jbHuman1, jbHuman2, jbHuman3, jbElf1, jbElf2, jbElf3; // Option
+																										// Characters
+	private JButton jbDagger, jbSword, jbAxe, jbDoubleSwords, jbScimitar, jbBow, jbKatana, jbKnife, jbGreatAxe; // Option
+																												// Weapons
 	private JPanel jpUserName, jpOptions, jpCharacter, jpWeapon, jpBattleEnemy, jpBattleCharacter, jpBattleActions;
 	private JTextArea jtaBattle;
 	private JButton jbFight, jbRunAway;
 	private String character, weapon;
 	private JScrollPane scrollPanelWeapon, scrollPanelCharacter, scrollPanelBattle;
 	private JProgressBar pbEnemyHealth, pbEnemyPower, pbEnemyAgility, pbEnemySpeed, pbEnemyDefense; // Enemy Stats
-	private JProgressBar pbCharacterHealth, pbCharacterPower, pbCharacterAgility, pbCharacterSpeed, pbCharacterDefense; // Character Stats
-	private ImageIcon imgCharacter;
-	private ImageIcon imgAxe, imgBow, imgDagger, imgSword, imgDoubleSwords, imgGreatAxe, imgKatana, imgKnife, imgScimitar;
-
-	public Ventana() {
-
+	private JProgressBar pbCharacterHealth, pbCharacterPower, pbCharacterAgility, pbCharacterSpeed, pbCharacterDefense; // Character
+																														// Stats
+	private ImageIcon imgDwarf1, imgDwarf2, imgDwarf3, imgHuman1, imgHuman2, imgHuman3, imgElf1, imgElf2, imgElf3;
+	private ImageIcon imgAxe, imgBow, imgDagger, imgSword, imgDoubleSwords, imgGreatAxe, imgKatana, imgKnife,
+			imgScimitar;
+	private ArrayList<Warrior> warriors;
+	private ArrayList<Weapon> weapons;
+	private String userName;
+	private JLabel jlCharacterImage;
+	private JLabel jlEnemyImage;
+	private ImageIcon imgPlayerBattle;
+	private ImageIcon imgEnemyBattle;
+	private JLabel jlCharacterWeapon;
+	private ImageIcon imgPlayerBattleWeapon;
+	private JLabel jlEnemyWeapon;
+	private ImageIcon imgEnemyBattleWeapon;
+	public Ventana(ArrayList<Warrior> warriors, ArrayList<Weapon> weapons) {
+		
+		this.warriors = warriors;
+		this.weapons = weapons;
+		
+		System.out.println(warriors);
+		System.out.println(weapons);
 		// Window
 		// Username----------------------------------------------------------------
 		jfUserName = new JFrame();
@@ -85,12 +116,12 @@ class Ventana {
 		gbc.gridy = 2;
 		gbLayout.setConstraints(jbEnter, gbc);
 		jpUserName.add(jbEnter);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbLayout.setConstraints(jbRanking, gbc);
 		jpUserName.add(jbRanking);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		gbLayout.setConstraints(jbExit, gbc);
@@ -101,34 +132,34 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String username = jtfUserName.getText();
-				if (username.length() == 0) {
-					//TODO CONTROLAR NOMBRE USUARIO VALIDO
+				userName = jtfUserName.getText();
+				if (userName.length() == 0) {
+					// TODO CONTROLAR NOMBRE USUARIO VALIDO
 					JOptionPane.showMessageDialog(null, "Incorrect username");
 				} else {
-					System.out.println(username);
+					System.out.println(userName);
 					jfUserName.setVisible(false);
 					jfOptions.setVisible(true);
 				}
 			}
 		});
-		
+
 		jbRanking.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jfUserName.setVisible(false);
 				jfRanking.setVisible(true);
-				
+
 			}
 		});
-		
+
 		jbExit.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jfUserName.dispose();
-				
+
 			}
 		});
 
@@ -139,7 +170,7 @@ class Ventana {
 		jfUserName.setResizable(false);
 
 		jfUserName.setLocationRelativeTo(null);
-		
+
 		jfUserName.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		jfUserName.setVisible(true);
@@ -185,12 +216,38 @@ class Ventana {
 
 //				System.out.println("PLAY");
 //				jfBattle.setVisible(true);
-				if (character == null) {
-				JOptionPane.showMessageDialog(null, "Choose a character!");
-				}else if(weapon == null) {
+				if (player == null) {
+					JOptionPane.showMessageDialog(null, "Choose a character!");
+				} else if (player.getWeapon() == null) {
 					JOptionPane.showMessageDialog(null, "Choose a weapon!");
-				}else {
+				} else {
 					System.out.println("PLAY");
+					
+					// Change characters Images
+					imgEnemyBattle = new ImageIcon(bot.getUrl());
+					jlEnemyImage.setIcon(imgEnemyBattle);
+					imgPlayerBattle = new ImageIcon(player.getUrl());
+					jlCharacterImage.setIcon(imgPlayerBattle);
+					
+					// Change character weapons Images
+					imgEnemyBattleWeapon = new ImageIcon(bot.getWeapon().getUrl());
+					jlEnemyWeapon.setIcon(imgEnemyBattleWeapon);
+					
+					imgPlayerBattleWeapon = new ImageIcon(player.getWeapon().getUrl());
+					jlCharacterWeapon.setIcon(imgPlayerBattleWeapon);
+					
+					
+					// Change ProgressBar Enemy
+					pbEnemyPower.setValue(bot.getAttack());
+					pbEnemySpeed.setValue(bot.getSpeed());
+					pbEnemyAgility.setValue(bot.getAgility());
+					pbEnemyDefense.setValue(bot.getDefense());
+					
+					pbEnemyHealth.setMaximum(bot.getStartingLife());
+					pbEnemyHealth.setValue(50);
+					pbEnemyHealth.setString("50/500");
+					
+					
 					jfBattle.setVisible(true);
 				}
 			}
@@ -201,7 +258,9 @@ class Ventana {
 			public void actionPerformed(ActionEvent e) {
 				jfOptions.setVisible(false);
 				jfCharacter.setVisible(true);
-				weapon = null;
+				if (player != null) {
+					player.setWeapon(null);
+				}
 			}
 		});
 
@@ -209,11 +268,11 @@ class Ventana {
 
 			public void actionPerformed(ActionEvent e) {
 
-				if (character == null) {
+				if (player == null) {
 					JOptionPane.showMessageDialog(null, "Choose a character First!");
 				} else {
 
-					if (character.equals("Dwarf")) {
+					if (player.getRace().equals("Dwarf")) {
 						jbDagger.setVisible(false);
 						jbSword.setVisible(true);
 						jbAxe.setVisible(true);
@@ -224,7 +283,7 @@ class Ventana {
 						jbKnife.setVisible(true);
 						jbGreatAxe.setVisible(true);
 
-					} else if (character.equals("Human")) {
+					} else if (player.getRace().equals("Human")) {
 						jbDagger.setVisible(true);
 						jbSword.setVisible(true);
 						jbAxe.setVisible(true);
@@ -234,7 +293,7 @@ class Ventana {
 						jbKatana.setVisible(true);
 						jbKnife.setVisible(true);
 						jbGreatAxe.setVisible(false);
-					} else if (character.equals("Elf")) {
+					} else if (player.getRace().equals("Elf")) {
 						jbDagger.setVisible(true);
 						jbSword.setVisible(true);
 						jbAxe.setVisible(false);
@@ -257,8 +316,7 @@ class Ventana {
 			public void actionPerformed(ActionEvent e) {
 				jfOptions.setVisible(false);
 				jfUserName.setVisible(true);
-				character = null;
-				weapon = null;
+				player = null;
 
 			}
 		});
@@ -268,7 +326,7 @@ class Ventana {
 		jfOptions.setResizable(false);
 
 		jfOptions.setLocationRelativeTo(null);
-		
+
 		jfOptions.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		jfOptions.setVisible(false);
@@ -289,17 +347,34 @@ class Ventana {
 		jbElf2 = new JButton();
 		jbElf3 = new JButton();
 
-		imgCharacter = new ImageIcon("128_character_example.png");
-
-		jbDwarf1.setIcon(imgCharacter);
-		jbDwarf2.setIcon(imgCharacter);
-		jbDwarf3.setIcon(imgCharacter);
-		jbHuman1.setIcon(imgCharacter);
-		jbHuman2.setIcon(imgCharacter);
-		jbHuman3.setIcon(imgCharacter);
-		jbElf1.setIcon(imgCharacter);
-		jbElf2.setIcon(imgCharacter);
-		jbElf3.setIcon(imgCharacter);
+		 imgDwarf1 = new ImageIcon(warriors.get(6).getUrl());
+		 imgDwarf2 = new ImageIcon(warriors.get(7).getUrl());
+		 imgDwarf3 = new ImageIcon(warriors.get(8).getUrl());
+		 imgHuman1 = new ImageIcon(warriors.get(0).getUrl());
+		 imgHuman2 = new ImageIcon(warriors.get(1).getUrl());
+		 imgHuman3 = new ImageIcon(warriors.get(2).getUrl());
+		 imgElf1 = new ImageIcon(warriors.get(3).getUrl());
+		 imgElf2 = new ImageIcon(warriors.get(4).getUrl());
+		 imgElf3 = new ImageIcon(warriors.get(5).getUrl());
+		jbDwarf1.setIcon(imgDwarf1);
+		jbDwarf2.setIcon(imgDwarf2);
+		jbDwarf3.setIcon(imgDwarf3);
+		jbHuman1.setIcon(imgHuman1);
+		jbHuman2.setIcon(imgHuman2);
+		jbHuman3.setIcon(imgHuman3);
+		jbElf1.setIcon(imgElf1);
+		jbElf2.setIcon(imgElf2);
+		jbElf3.setIcon(imgElf3);
+		
+		jbDwarf1.setToolTipText(warriors.get(6).getName());
+		jbDwarf2.setToolTipText(warriors.get(7).getName());
+		jbDwarf3.setToolTipText(warriors.get(8).getName());
+		jbHuman1.setToolTipText(warriors.get(0).getName());
+		jbHuman2.setToolTipText(warriors.get(1).getName());
+		jbHuman3.setToolTipText(warriors.get(2).getName());
+		jbElf1.setToolTipText(warriors.get(3).getName());
+		jbElf2.setToolTipText(warriors.get(4).getName());
+		jbElf3.setToolTipText(warriors.get(5).getName());
 
 		jbDwarf1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		jbDwarf2.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -337,11 +412,12 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Dwarf";
+				player = warriors.get(6);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
 				System.out.println("OKEYYYY");
-
+				
+				getRandomEnemy();
 			}
 		});
 
@@ -349,10 +425,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Dwarf";
+				player = warriors.get(7);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -360,10 +436,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Dwarf";
+				player = warriors.get(8);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -371,10 +447,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Human";
+				player = warriors.get(0);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -382,10 +458,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Human";
+				player = warriors.get(1);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -393,10 +469,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Human";
+				player = warriors.get(2);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -404,10 +480,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Elf";
+				player = warriors.get(3);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -415,10 +491,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Elf";
+				player = warriors.get(4);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -426,10 +502,10 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				character = "Elf";
+				player = warriors.get(5);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-
+				getRandomEnemy();
 			}
 		});
 
@@ -440,7 +516,7 @@ class Ventana {
 		jfCharacter.setResizable(false);
 
 		jfCharacter.setLocationRelativeTo(null);
-		
+
 		jfCharacter.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		jfCharacter.setVisible(false);
@@ -464,17 +540,17 @@ class Ventana {
 
 		ImageIcon imgWeapon = new ImageIcon("weapon.png");
 		ImageIcon imgWeaponCharacter = new ImageIcon("weapon_character.png");
-		
-		imgDagger = new ImageIcon("Dagger.png");
-		imgSword = new ImageIcon("Sword.png");
-		imgAxe = new ImageIcon("Axe.png");
-		imgDoubleSwords = new ImageIcon("Double Swords.png");
-		imgScimitar = new ImageIcon("Scimitar.png");
-		imgBow = new ImageIcon("Bow.png");
-		imgKatana = new ImageIcon("Katana.png");
-		imgKnife = new ImageIcon("Knife.png");
-		imgGreatAxe = new ImageIcon("Great Axe.png");
-		
+
+		imgDagger = new ImageIcon(weapons.get(0).getUrl());
+		imgSword = new ImageIcon(weapons.get(1).getUrl());
+		imgAxe = new ImageIcon(weapons.get(2).getUrl());
+		imgDoubleSwords = new ImageIcon(weapons.get(3).getUrl());
+		imgScimitar = new ImageIcon(weapons.get(4).getUrl());
+		imgBow = new ImageIcon(weapons.get(5).getUrl());
+		imgKatana = new ImageIcon(weapons.get(6).getUrl());
+		imgKnife = new ImageIcon(weapons.get(7).getUrl());
+		imgGreatAxe = new ImageIcon(weapons.get(8).getUrl());
+
 		jbDagger.setIcon(imgDagger);
 		jbSword.setIcon(imgSword);
 		jbAxe.setIcon(imgAxe);
@@ -494,9 +570,25 @@ class Ventana {
 		jbKatana.setAlignmentX(Component.CENTER_ALIGNMENT);
 		jbKnife.setAlignmentX(Component.CENTER_ALIGNMENT);
 		jbGreatAxe.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		jbDagger.setToolTipText("Dagger: Speed: +3 ");
-//		jbSword.
+
+		jbDagger.setToolTipText(weapons.get(0).getName() + ": Strength: " + weapons.get(0).getStrength() + " Speed: "
+				+ weapons.get(0).getVelocity());
+		jbSword.setToolTipText(weapons.get(1).getName() + ": Strength: " + weapons.get(1).getStrength() + " Speed: "
+				+ weapons.get(1).getVelocity());
+		jbAxe.setToolTipText(weapons.get(2).getName() + ": Strength: " + weapons.get(2).getStrength() + " Speed: "
+				+ weapons.get(2).getVelocity());
+		jbDoubleSwords.setToolTipText(weapons.get(3).getName() + ": Strength: " + weapons.get(3).getStrength()
+				+ " Speed: " + weapons.get(3).getVelocity());
+		jbScimitar.setToolTipText(weapons.get(4).getName() + ": Strength: " + weapons.get(4).getStrength() + " Speed: "
+				+ weapons.get(4).getVelocity());
+		jbBow.setToolTipText(weapons.get(5).getName() + ": Strength: " + weapons.get(5).getStrength() + " Speed: "
+				+ weapons.get(5).getVelocity());
+		jbKatana.setToolTipText(weapons.get(6).getName() + ": Strength: " + weapons.get(6).getStrength() + " Speed: "
+				+ weapons.get(6).getVelocity());
+		jbKnife.setToolTipText(weapons.get(7).getName() + ": Strength: " + weapons.get(7).getStrength() + " Speed: "
+				+ weapons.get(7).getVelocity());
+		jbGreatAxe.setToolTipText(weapons.get(8).getName() + ": Strength: " + weapons.get(8).getStrength() + " Speed: "
+				+ weapons.get(8).getVelocity());
 
 		jpWeapon.add(jbDagger);
 		jpWeapon.add(jbSword);
@@ -515,7 +607,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Dagger";
+				player.setWeapon(weapons.get(0));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 				System.out.println("OKEYYYY");
@@ -527,7 +619,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Sword";
+				player.setWeapon(weapons.get(1));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -538,7 +630,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Axe";
+				player.setWeapon(weapons.get(2));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -549,7 +641,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "DoubleSwords";
+				player.setWeapon(weapons.get(3));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -560,7 +652,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Scimitar";
+				player.setWeapon(weapons.get(4));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -571,7 +663,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Bow";
+				player.setWeapon(weapons.get(5));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -582,7 +674,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Katana";
+				player.setWeapon(weapons.get(6));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -593,7 +685,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "Knife";
+				player.setWeapon(weapons.get(7));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -604,7 +696,7 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				weapon = "GreatAxe";
+				player.setWeapon(weapons.get(8));
 				jfWeapon.setVisible(false);
 				jfOptions.setVisible(true);
 
@@ -618,7 +710,7 @@ class Ventana {
 		jfWeapon.setResizable(false);
 
 		jfWeapon.setLocationRelativeTo(null);
-		
+
 		jfWeapon.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		jfWeapon.setVisible(false);
@@ -632,8 +724,9 @@ class Ventana {
 		jpBattleEnemy.setLayout(null);
 
 		// JLabel Enemy Weapon
-		JLabel jlEnemyWeapon = new JLabel();
-		jlEnemyWeapon.setIcon(imgWeapon);
+		imgEnemyBattleWeapon = new ImageIcon(weapons.get(0).getUrl());
+		jlEnemyWeapon = new JLabel();
+		jlEnemyWeapon.setIcon(imgEnemyBattleWeapon);
 		jlEnemyWeapon.setBounds(265, 35, 128, 128);
 
 		// JLabel Text Power
@@ -694,8 +787,9 @@ class Ventana {
 		jpBattleEnemy.add(pbEnemyHealth);
 
 		// JLabel Enemy Image
-		var jlEnemyImage = new JLabel();
-		jlEnemyImage.setIcon(imgCharacter);
+		jlEnemyImage = new JLabel();
+		imgEnemyBattle =  new ImageIcon(warriors.get(0).getUrl());
+		jlEnemyImage.setIcon(imgEnemyBattle);
 		jlEnemyImage.setBounds(395, 35, 128, 128);
 
 		// Add elements to the Panel
@@ -715,8 +809,8 @@ class Ventana {
 		jpBattleCharacter = new JPanel();
 		pbCharacterHealth = new JProgressBar(0, 400);
 
-		// JLabel Character Image
-		var jlCharacterImage = new JLabel();
+		// JLabel Character
+		jlCharacterImage = new JLabel();
 		jpBattleCharacter.setBackground(Color.BLUE);
 		jpBattleCharacter.setLayout(null);
 
@@ -728,12 +822,15 @@ class Ventana {
 		pbCharacterHealth.setBounds(15, 15, 145, 15);
 
 		// JLabel CharacterImage
-		jlCharacterImage.setIcon(imgCharacter);
+		
+		imgPlayerBattle =  new ImageIcon(warriors.get(0).getUrl());
+		jlCharacterImage.setIcon(imgPlayerBattle);
 		jlCharacterImage.setBounds(20, 35, 128, 128);
 
 		// JLabel Character Weapon
-		JLabel jlCharacterWeapon = new JLabel();
-		jlCharacterWeapon.setIcon(imgWeaponCharacter);
+		imgPlayerBattleWeapon = new ImageIcon(weapons.get(0).getUrl());
+		jlCharacterWeapon = new JLabel();
+		jlCharacterWeapon.setIcon(imgPlayerBattleWeapon);
 		jlCharacterWeapon.setBounds(165, 35, 128, 128);
 
 		// JLabel Text Power
@@ -797,7 +894,7 @@ class Ventana {
 		jpBattleCharacter.add(pbCharacterSpeed);
 		jpBattleCharacter.add(pbCharacterDefense);
 		jpBattleCharacter.setBounds(20, 205, 550, 175);
-		
+
 		// JTextArea Battle information with scrollBar
 		jtaBattle = new JTextArea();
 		jtaBattle.setEditable(false);
@@ -806,42 +903,40 @@ class Ventana {
 
 		scrollPanelBattle = new JScrollPane(jtaBattle, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		scrollPanelBattle.setBounds(20, 400, 420, 140);
-		
+
 		jbFight = new JButton("FIGHT!");
-		
+
 		jbFight.setBackground(Color.GREEN);
-		
+
 		jbFight.setBounds(460, 400, 100, 100);
-		
+
 		jbRunAway = new JButton("Run away");
 		jbRunAway.setBackground(Color.YELLOW);
 		jbRunAway.setToolTipText("Caution, your points will reset!");
-		jbRunAway.setBounds(460, 510, 100, 30 );
-		
+		jbRunAway.setBounds(460, 510, 100, 30);
+
 		jbRunAway.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				jfBattle.setVisible(false);
 				character = null;
-				weapon= null;
+				weapon = null;
 				jfOptions.setVisible(true);
 				System.out.println("You run Away");
 			}
 		});
-		
-		
+
 		// Add panels to Battle Window
 		jfBattle.add(jpBattleEnemy);
 		jfBattle.add(jpBattleCharacter);
 		jfBattle.add(scrollPanelBattle);
 		jfBattle.add(jbFight);
 		jfBattle.add(jbRunAway);
-		
-		
+
 		// Properties Battle Window
 		jfBattle.setLayout(null);
 		jfBattle.setSize(600, 600);
@@ -849,36 +944,54 @@ class Ventana {
 		jfBattle.setLocationRelativeTo(null);
 		jfBattle.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		jfBattle.setVisible(false);
-		
+
 		// Ranking Window
-		
+
 		jfRanking = new JFrame();
-		
+
 		jbClose = new JButton("Close");
-		
-		
-		
-		
+
 		jbClose.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jfRanking.setVisible(false);
 				jfUserName.setVisible(true);
-				
+
 			}
 		});
 		
+		jbFight.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("añldkfjañslkfjsñlkfjsñlkfjsñdlfjs");
+				
+			}
+		});
+
 		jfRanking.add(jbClose, BorderLayout.SOUTH);
-		
-		
+
 		jfRanking.setSize(600, 600);
 		jfRanking.setResizable(false);
 		jfRanking.setLocationRelativeTo(null);
 		jfRanking.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		jfRanking.setVisible(false);
-		
 
+	}
+	
+	private void getRandomEnemy() {
+		
+		do {
+			int index = randomNumber.nextInt(9);
+			bot = warriors.get(index);
+		} while (player == bot);
+
+		int indexWeapon;
+		do {
+			indexWeapon = randomNumber.nextInt(9);
+		} while (!weapons.get(indexWeapon).getWeapon_race().contains(bot.getRace()));
+		bot.setWeapon(weapons.get(indexWeapon));
 	}
 
 }
