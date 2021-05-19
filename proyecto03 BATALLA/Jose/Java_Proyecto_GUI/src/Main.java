@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.text.DefaultCaret;
 
 public class Main {
 
@@ -46,6 +47,7 @@ public class Main {
 
 class Ventana {
 	private Warrior player, bot;
+	private int total_points = 0, fights = 0, order = 0, turn = 0;
 	private Random randomNumber = new Random();
 	private JFrame jfUserName, jfOptions, jfCharacter, jfWeapon, jfBattle, jfRanking;
 	private JButton jbEnter, jbRanking, jbExit;
@@ -77,13 +79,13 @@ class Ventana {
 	private ImageIcon imgPlayerBattleWeapon;
 	private JLabel jlEnemyWeapon;
 	private ImageIcon imgEnemyBattleWeapon;
+	private boolean battleStarted = false;
 	public Ventana(ArrayList<Warrior> warriors, ArrayList<Weapon> weapons) {
-		
+
 		this.warriors = warriors;
 		this.weapons = weapons;
-		
-		System.out.println(warriors);
-		System.out.println(weapons);
+
+
 		// Window
 		// Username----------------------------------------------------------------
 		jfUserName = new JFrame();
@@ -95,12 +97,12 @@ class Ventana {
 		// Grid Bag Layout
 		GridBagLayout gbLayout = new GridBagLayout();
 		jpUserName.setLayout(gbLayout);
-
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		JLabel jlUsername = new JLabel("Username");
 		JTextField jtfUserName = new JTextField(20);
-		jtfUserName.setToolTipText("Username");
+		jtfUserName.setToolTipText("Between 3 and 15 characters, starting with a letter. Underscores permitted.");
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -132,9 +134,9 @@ class Ventana {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// User input validation
 				userName = jtfUserName.getText();
-				if (userName.length() == 0) {
-					// TODO CONTROLAR NOMBRE USUARIO VALIDO
+				if (!userName.matches("^[A-Za-z]\\w{2,14}$")) {
 					JOptionPane.showMessageDialog(null, "Incorrect username");
 				} else {
 					System.out.println(userName);
@@ -223,39 +225,49 @@ class Ventana {
 				} else {
 					System.out.println("PLAY");
 					
+					// Generate Random Enemy
+					getRandomEnemy();
+					
+					// Reset TextArea
+					jtaBattle.setText("");
+					
+					//life restart
+					player.setLife(player.getStartingLife());
+					
 					// Change characters Images
 					imgEnemyBattle = new ImageIcon(bot.getUrl());
 					jlEnemyImage.setIcon(imgEnemyBattle);
 					imgPlayerBattle = new ImageIcon(player.getUrl());
 					jlCharacterImage.setIcon(imgPlayerBattle);
-					
+
 					// Change character weapons Images
 					imgEnemyBattleWeapon = new ImageIcon(bot.getWeapon().getUrl());
 					jlEnemyWeapon.setIcon(imgEnemyBattleWeapon);
-					
+
 					imgPlayerBattleWeapon = new ImageIcon(player.getWeapon().getUrl());
 					jlCharacterWeapon.setIcon(imgPlayerBattleWeapon);
-					
-					
+
 					// Change ProgressBar Enemy
 					pbEnemyPower.setValue(bot.getAttack());
 					pbEnemySpeed.setValue(bot.getSpeed());
 					pbEnemyAgility.setValue(bot.getAgility());
 					pbEnemyDefense.setValue(bot.getDefense());
-					
+
 					pbEnemyHealth.setMaximum(bot.getStartingLife());
-					pbEnemyHealth.setValue(bot.getStartingLife());
-					pbEnemyHealth.setString(bot.getLife()+"/"+bot.getStartingLife());
-					
+					pbEnemyHealth.setValue(bot.getLife());
+					pbEnemyHealth.setString(bot.getLife() + "/" + bot.getStartingLife());
+
 					// Change ProgressBar Player
 					pbCharacterPower.setValue(player.getAttack());
 					pbCharacterSpeed.setValue(player.getSpeed());
 					pbCharacterAgility.setValue(player.getAgility());
 					pbCharacterDefense.setValue(player.getDefense());
 					pbCharacterHealth.setMaximum(player.getStartingLife());
-					pbCharacterHealth.setValue(player.getStartingLife());
-					pbCharacterHealth.setString(player.getLife()+"/"+player.getStartingLife());
+					pbCharacterHealth.setValue(player.getLife());
+					pbCharacterHealth.setString(player.getLife() + "/" + player.getStartingLife());
 					
+					//Change Windows
+					jfOptions.setVisible(false);
 					jfBattle.setVisible(true);
 				}
 			}
@@ -355,15 +367,15 @@ class Ventana {
 		jbElf2 = new JButton();
 		jbElf3 = new JButton();
 
-		 imgDwarf1 = new ImageIcon(warriors.get(6).getUrl());
-		 imgDwarf2 = new ImageIcon(warriors.get(7).getUrl());
-		 imgDwarf3 = new ImageIcon(warriors.get(8).getUrl());
-		 imgHuman1 = new ImageIcon(warriors.get(0).getUrl());
-		 imgHuman2 = new ImageIcon(warriors.get(1).getUrl());
-		 imgHuman3 = new ImageIcon(warriors.get(2).getUrl());
-		 imgElf1 = new ImageIcon(warriors.get(3).getUrl());
-		 imgElf2 = new ImageIcon(warriors.get(4).getUrl());
-		 imgElf3 = new ImageIcon(warriors.get(5).getUrl());
+		imgDwarf1 = new ImageIcon(warriors.get(6).getUrl());
+		imgDwarf2 = new ImageIcon(warriors.get(7).getUrl());
+		imgDwarf3 = new ImageIcon(warriors.get(8).getUrl());
+		imgHuman1 = new ImageIcon(warriors.get(0).getUrl());
+		imgHuman2 = new ImageIcon(warriors.get(1).getUrl());
+		imgHuman3 = new ImageIcon(warriors.get(2).getUrl());
+		imgElf1 = new ImageIcon(warriors.get(3).getUrl());
+		imgElf2 = new ImageIcon(warriors.get(4).getUrl());
+		imgElf3 = new ImageIcon(warriors.get(5).getUrl());
 		jbDwarf1.setIcon(imgDwarf1);
 		jbDwarf2.setIcon(imgDwarf2);
 		jbDwarf3.setIcon(imgDwarf3);
@@ -373,7 +385,7 @@ class Ventana {
 		jbElf1.setIcon(imgElf1);
 		jbElf2.setIcon(imgElf2);
 		jbElf3.setIcon(imgElf3);
-		
+
 		jbDwarf1.setToolTipText(warriors.get(6).getName());
 		jbDwarf2.setToolTipText(warriors.get(7).getName());
 		jbDwarf3.setToolTipText(warriors.get(8).getName());
@@ -415,6 +427,9 @@ class Ventana {
 
 		scrollPanelCharacter = new JScrollPane(jpCharacter, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		// Adjust the displacement size of the JScrollPane 
+		scrollPanelCharacter.getVerticalScrollBar().setUnitIncrement(16);
 
 		jbDwarf1.addActionListener(new ActionListener() {
 
@@ -424,8 +439,7 @@ class Ventana {
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
 				System.out.println("OKEYYYY");
-				
-				getRandomEnemy();
+
 			}
 		});
 
@@ -436,7 +450,6 @@ class Ventana {
 				player = warriors.get(7);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -447,7 +460,6 @@ class Ventana {
 				player = warriors.get(8);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -458,7 +470,6 @@ class Ventana {
 				player = warriors.get(0);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -469,7 +480,6 @@ class Ventana {
 				player = warriors.get(1);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -480,7 +490,6 @@ class Ventana {
 				player = warriors.get(2);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -491,7 +500,6 @@ class Ventana {
 				player = warriors.get(3);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -502,7 +510,6 @@ class Ventana {
 				player = warriors.get(4);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -513,7 +520,6 @@ class Ventana {
 				player = warriors.get(5);
 				jfCharacter.setVisible(false);
 				jfOptions.setVisible(true);
-				getRandomEnemy();
 			}
 		});
 
@@ -545,9 +551,6 @@ class Ventana {
 		jbKatana = new JButton();
 		jbKnife = new JButton();
 		jbGreatAxe = new JButton();
-
-		ImageIcon imgWeapon = new ImageIcon("weapon.png");
-		ImageIcon imgWeaponCharacter = new ImageIcon("weapon_character.png");
 
 		imgDagger = new ImageIcon(weapons.get(0).getUrl());
 		imgSword = new ImageIcon(weapons.get(1).getUrl());
@@ -610,6 +613,9 @@ class Ventana {
 
 		scrollPanelWeapon = new JScrollPane(jpWeapon, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		// Adjust the displacement size of the JScrollPane 
+		scrollPanelWeapon.getVerticalScrollBar().setUnitIncrement(16);
 
 		jbDagger.addActionListener(new ActionListener() {
 
@@ -796,7 +802,7 @@ class Ventana {
 
 		// JLabel Enemy Image
 		jlEnemyImage = new JLabel();
-		imgEnemyBattle =  new ImageIcon(warriors.get(0).getUrl());
+		imgEnemyBattle = new ImageIcon(warriors.get(0).getUrl());
 		jlEnemyImage.setIcon(imgEnemyBattle);
 		jlEnemyImage.setBounds(395, 35, 128, 128);
 
@@ -830,8 +836,8 @@ class Ventana {
 		pbCharacterHealth.setBounds(15, 15, 145, 15);
 
 		// JLabel CharacterImage
-		
-		imgPlayerBattle =  new ImageIcon(warriors.get(0).getUrl());
+
+		imgPlayerBattle = new ImageIcon(warriors.get(0).getUrl());
 		jlCharacterImage.setIcon(imgPlayerBattle);
 		jlCharacterImage.setBounds(20, 35, 128, 128);
 
@@ -908,11 +914,13 @@ class Ventana {
 		jtaBattle.setEditable(false);
 		jtaBattle.setLineWrap(true);
 		jtaBattle.setWrapStyleWord(true);
+		DefaultCaret caret = (DefaultCaret)jtaBattle.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 		scrollPanelBattle = new JScrollPane(jtaBattle, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		scrollPanelBattle.setBounds(20, 400, 420, 140);
+		scrollPanelBattle.setBounds(20, 400, 430, 140);
 
 		jbFight = new JButton("FIGHT!");
 
@@ -931,8 +939,9 @@ class Ventana {
 			public void actionPerformed(ActionEvent e) {
 
 				jfBattle.setVisible(false);
-				character = null;
-				weapon = null;
+				total_points = 0;
+				turn = 0;
+				player.setWeapon(null);
 				jfOptions.setVisible(true);
 				System.out.println("You run Away");
 			}
@@ -968,13 +977,46 @@ class Ventana {
 
 			}
 		});
-		
+
 		jbFight.addActionListener(new ActionListener() {
+
 			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("añldkfjañslkfjsñlkfjsñlkfjsñdlfjs");
 				
+				if (battleStarted == false){
+					battleStarted = true;
+					fights++;
+				}
+				setOrder(player, bot);
+				fight(player, bot);
+				
+				
+//				fights++;
+//				System.out.println(fights);
+//				setOrder(player, bot);
+//				fight(player, bot);
+//				
+//				int injuries_caused = Math.abs(bot.getLife() - bot.getStartingLife());
+//				// injuries_caused = Math.abs(injuries_caused);
+//				System.out.println("injuries caused " + injuries_caused);
+//				int injuries_suffered = Math.abs(player.getLife() - player.getStartingLife());
+//				System.out.println("injuries suffered " + injuries_suffered);
+//				int battle_points = Math.abs(((player.getLife() + injuries_caused) * 100) - injuries_suffered);
+//				System.out.println("battle_points " + battle_points);
+//				total_points = total_points + battle_points;
+//
+//				if (fights == 1) {
+//					MySQLConnection.loadData(userName, player, bot, injuries_caused, injuries_suffered, battle_points,
+//							total_points);
+//				} else {
+//					MySQLConnection.updateData(player, bot, injuries_caused, injuries_suffered, battle_points,
+//							total_points);
+//				}
+//				
+//				System.out.println("Partida terminada");
+
 			}
 		});
 
@@ -987,9 +1029,9 @@ class Ventana {
 		jfRanking.setVisible(false);
 
 	}
-	
+
 	private void getRandomEnemy() {
-		
+
 		do {
 			int index = randomNumber.nextInt(9);
 			bot = warriors.get(index);
@@ -1000,6 +1042,209 @@ class Ventana {
 			indexWeapon = randomNumber.nextInt(9);
 		} while (!weapons.get(indexWeapon).getWeapon_race().contains(bot.getRace()));
 		bot.setWeapon(weapons.get(indexWeapon));
+		bot.setLife(bot.getStartingLife());
+	}
+	
+	private int setOrder(Warrior player, Warrior bot) {
+		if (player.getSpeed() > bot.getSpeed()) {
+			return 0;
+		} else if (player.getSpeed() < bot.getSpeed()) {
+			return 1;
+		} else {
+			if (player.getAgility() > bot.getAgility()) {
+				return 0;
+			} else if (player.getAgility() < bot.getAgility()) {
+				return 1;
+			} else {
+				int numRandom = (int) (Math.random() * 2);
+				if (numRandom == 1) {
+					return 0;
+				} else {
+					return 1;
+				}
+			}
+		}
+	}
+	
+	private void playTurn(Warrior player, Warrior bot) {
+		
+		jtaBattle.append("\n" +new String(new char[22])
+				.replace("\0","=") + " " + String.format("%-16s", (player.getName() + "'s turn "
+				.replace(' ', '?'))).replace(' ','=').replace('?', ' ') +new String(new char[21]).replace("\0","="));
+		jtaBattle.append("\n"+bot.getDefend(player, player.getAttack()));
+		jtaBattle.append("\n\n");
+	}
+	
+	private void playTurnBot(Warrior bot, Warrior player) {
+		jtaBattle.append("\n"+new String(new char[22])
+				.replace("\0","=") + " " + String.format("%-16s", (bot.getName() + "'s turn ".replace(' ', '?')))
+				.replace(' ','=').replace('?', ' ') +new String(new char[21]).replace("\0","="));
+		jtaBattle.append("\n"+player.getDefend(bot, bot.getAttack()));
+		jtaBattle.append("\n\n");
+	}
+	
+	
+	private int changeTurn(Warrior player, Warrior bot, int order, int turn) {
+		// if (order%2 == 0) {
+		if (player.getSpeed() <= bot.getSpeed()) {
+
+			order++;
+			turn++;
+		} else {
+			int numRandom = (int) (Math.random() * 101);
+			if ((player.getSpeed() - bot.getSpeed()) * 10 <= numRandom) {
+				order++;
+				turn++;
+			} else { // En caso que no se cumplan las condiciones de cambio el personaje puede atacar
+						// de nuevo.
+				System.out.println(
+						player.getName() + " is faster than " + bot.getName() + "!! Has another chance to attack!!");
+			}
+		}
+		return order;
+//		} 
+		/*
+		 * if (order%2 == 1 && (player.getLife() > 0 & bot.getLife() > 0)) { if
+		 * (bot.getSpeed() <= player.getSpeed()) { order++; turn++; } else { int
+		 * numRandom = (int)(Math.random()*101); if ((bot.getSpeed() -
+		 * player.getSpeed())*10 <= numRandom) { order++; turn++; } else { // En caso
+		 * que no se cumplan las condiciones de cambio el personaje puede atacar de
+		 * nuevo. System.out.println(bot.getName() + " es más rapido que " +
+		 * player.getName() + "!! Tiene otra oportunidad de ataque!"); } } }
+		 */
+	}
+	
+	protected static int changeTurnBot(Warrior bot, Warrior player, int order, int turn) {
+		if (bot.getSpeed() <= player.getSpeed()) {
+			order++;
+			turn++;
+		} else {
+			int numRandom = (int) (Math.random() * 101);
+			if ((bot.getSpeed() - player.getSpeed()) * 10 <= numRandom) {
+				order++;
+				turn++;
+			} else { // En caso que no se cumplan las condiciones de cambio el personaje puede atacar
+						// de nuevo.
+				System.out.println(bot.getName() + " is faster than " + player.getName()
+						+ "!! Has another chance to attack!!");
+			}
+		}
+		return order;
+	}
+	
+	private void fight(Warrior player, Warrior bot) {
+
+		
+			if (order % 2 == 0 && (player.getLife() > 0 & bot.getLife() > 0)) {
+				turn++;
+				jtaBattle.append("\nTurn " + turn);
+//				System.out.println("Order " + order);
+				playTurn(player, bot);
+				order = changeTurn(player, bot, order, turn);
+			}
+			if (order % 2 == 1 && (player.getLife() > 0 & bot.getLife() > 0)) {
+				turn++;
+				jtaBattle.append("\nTurn " + turn);
+//				System.out.println("Order " + order);
+				playTurnBot(bot, player);
+				order = changeTurnBot(bot, player, order, turn);
+			}
+			
+			// Change progress Bar
+			pbCharacterHealth.setValue(player.getLife());
+			pbCharacterHealth.setString(player.getLife() + "/" + player.getStartingLife());
+			pbEnemyHealth.setValue(bot.getLife());
+			pbEnemyHealth.setString(bot.getLife() + "/" + bot.getStartingLife());
+
+			// If someone dies
+		if (!(player.getLife() > 0 & bot.getLife() > 0)) {
+			
+			int injuries_caused = Math.abs(bot.getLife() - bot.getStartingLife());
+			// injuries_caused = Math.abs(injuries_caused);
+			System.out.println("injuries caused " + injuries_caused);
+			int injuries_suffered = Math.abs(player.getLife() - player.getStartingLife());
+			System.out.println("injuries suffered " + injuries_suffered);
+			int battle_points = Math.abs(((player.getLife() + injuries_caused) * 100) - injuries_suffered);
+			System.out.println("battle_points " + battle_points);
+			total_points = total_points + battle_points;
+			
+			if (fights == 1) {
+			MySQLConnection.loadData(userName, player, bot, injuries_caused, injuries_suffered, battle_points,
+					total_points);
+			} else {
+			MySQLConnection.updateData(player, bot, injuries_caused, injuries_suffered, battle_points,
+					total_points);
+			}
+			
+			
+//			System.out.println("Combat Result");
+			if (player.getLife() > bot.getLife()) {
+				
+				String[] options = {"Keep fighting", "Exit"};
+				int option = JOptionPane.showOptionDialog(null, "You Won! Total points: "+total_points,
+						"Battle result",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+				if (option == 0) {
+					jfBattle.setVisible(false);
+					jfOptions.setVisible(true);
+					order = 0;
+					turn = 0;
+				}else if (option == 1) {
+					jfBattle.setVisible(false);
+					jfUserName.setVisible(true);
+					this.player.setWeapon(null);
+					this.player = null;
+					total_points = 0;
+					fights = 0; 
+					order = 0; 
+					turn = 0;
+				}else {
+					jfBattle.setVisible(false);
+					jfUserName.setVisible(true);
+					this.player.setWeapon(null);
+					this.player = null;
+					total_points = 0;
+					fights = 0; 
+					order = 0; 
+					turn = 0;
+				}
+			} else {
+				System.out.println("\n" + bot.getName() + " wins!\n");
+				
+				String[] options = {"Fight Again?", "Exit"};
+				int option = JOptionPane.showOptionDialog(null, "You Lose! Total points: "+total_points,
+						"Battle result",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+				if (option == 0) {
+					jfBattle.setVisible(false);
+					jfOptions.setVisible(true);
+					player.setLife(player.getStartingLife());
+					order = 0;
+					turn = 0;
+					total_points = 0;
+				}else if (option == 1) {
+					jfBattle.setVisible(false);
+					jfUserName.setVisible(true);
+					this.player.setWeapon(null);
+					this.player = null;
+					total_points = 0;
+					fights = 0; 
+					order = 0; 
+					turn = 0;
+				}else {
+					jfBattle.setVisible(false);
+					jfUserName.setVisible(true);
+					this.player.setWeapon(null);
+					this.player = null;
+					total_points = 0;
+					fights = 0; 
+					order = 0; 
+					turn = 0;
+				}
+				
+			}
+			}
+
 	}
 
 }

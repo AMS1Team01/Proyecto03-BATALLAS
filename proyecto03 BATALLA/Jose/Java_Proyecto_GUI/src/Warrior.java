@@ -126,7 +126,7 @@ abstract class Warrior extends WarriorContainer { //Se crea la clase abstracta P
 		
 		//If the random number is equal or higher than the precision, the attack fails.
 		int precision = enemy.getAgility()*10;
-		System.out.println("Attacker's precision is: " + precision );
+//		System.out.println("Attacker's precision is: " + precision );
 		if ((int)(Math.random()*101) >= precision) {
 			phrase = enemy.getName() + " can't find an opening to attack!";
 		} else {//If is successfull, we calculate the damage regarding the race and weapon.
@@ -135,7 +135,7 @@ abstract class Warrior extends WarriorContainer { //Se crea la clase abstracta P
 			/* If the random number is is equal or higher than the evasion, 
 			 the attack is defended and deals no damage.*/
 			int evasion = this.getAgility();
-			System.out.println("Defender's evasion is: " + evasion);
+//			System.out.println("Defender's evasion is: " + evasion);
 			if ((int)(Math.random()*51) < evasion) {
 				phrase += "\n" + this.getName() + " dodged!";
 			} else {// If success, we calculate the final damage using the attack damage and the defense
@@ -164,49 +164,19 @@ abstract class Warrior extends WarriorContainer { //Se crea la clase abstracta P
 	/* This function returns the total attack value which is the sum of warrior and weapon strength attributes*/
 	public int getAttack() { //Attack function
 		int damage = this.getStrength() + this.getWeapon().getStrength();
-		System.out.println("Este personaje " + this.getName() + " hace " + damage + " puntos de danyo");
+//		System.out.println("Este personaje " + this.getName() + " hace " + damage + " puntos de danyo");
 		return damage;
 					
-//		if (this.getWeapon().getName() == "Sword") {
-//			damage += 1;	
-//		} else if (this.getWeapon().getName() == "Axe") {
-//			damage += 3;
-//		} else if (this.getWeapon().getName() == "Double Swords") {
-//			damage += 2;
-//		} else if (this.getWeapon().getName() == "Scimitar") {
-//			damage += 1;
-//		} else if (this.getWeapon().getName() == "Bow") {
-//			damage += 1;
-//		} else if (this.getWeapon().getName() == "Katana") {
-//			damage += 1;
-//		} else if (this.getWeapon().getName() == "Two-handed ax") {
-//			damage += 5;
-//		}
-//		return damage;
+
 	}
 	
 	/* This function returns the total speed value which is the sum of warrior and weapon velocity attributes*/
 	public int getSpeed() { //Se crea el metodo getSpeed
 		int speed = this.getVelocity() + this.getWeapon().getVelocity();
-		System.out.println( "este personaje " + this.getName() + " tiene : " + speed + " Velocidad.");
+//		System.out.println( "este personaje " + this.getName() + " tiene : " + speed + " Velocidad.");
 		return speed;
 		
-//		if (this.getWeapon().getName() == "Dagger") {
-//			speed += 3;	
-//		} else if (this.getWeapon().getName() == "Sword") {
-//			speed += 1;
-//		} else if (this.getWeapon().getName() == "Double Swords") {
-//			speed += 2;
-//		} else if (this.getWeapon().getName() == "Scimitar") {
-//			speed += 2;
-//		} else if (this.getWeapon().getName() == "Bow") {
-//			speed += 5;
-//		} else if (this.getWeapon().getName() == "Katana") {
-//			speed += 3;
-//		} else if (this.getWeapon().getName() == "Knive") {
-//			speed += 4;
-//		}
-//		return speed;
+
 	}
 
 	
