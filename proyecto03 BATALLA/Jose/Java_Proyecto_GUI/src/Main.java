@@ -244,9 +244,17 @@ class Ventana {
 					pbEnemyDefense.setValue(bot.getDefense());
 					
 					pbEnemyHealth.setMaximum(bot.getStartingLife());
-					pbEnemyHealth.setValue(50);
-					pbEnemyHealth.setString("50/500");
+					pbEnemyHealth.setValue(bot.getStartingLife());
+					pbEnemyHealth.setString(bot.getLife()+"/"+bot.getStartingLife());
 					
+					// Change ProgressBar Player
+					pbCharacterPower.setValue(player.getAttack());
+					pbCharacterSpeed.setValue(player.getSpeed());
+					pbCharacterAgility.setValue(player.getAgility());
+					pbCharacterDefense.setValue(player.getDefense());
+					pbCharacterHealth.setMaximum(player.getStartingLife());
+					pbCharacterHealth.setValue(player.getStartingLife());
+					pbCharacterHealth.setString(player.getLife()+"/"+player.getStartingLife());
 					
 					jfBattle.setVisible(true);
 				}
