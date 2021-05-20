@@ -42,7 +42,7 @@ public class MySQLConnection {
 	
 	protected static String urlDatos = "jdbc:mysql://localhost/batallas?serverTimezone=UTC";
 	protected static String usuario = "root";
-	protected static String pass = "alumne";
+	protected static String pass = "toor";
 	private static Connection conn = null;
 	private static Statement stmnt = null;
 	private static ResultSet rs = null;
