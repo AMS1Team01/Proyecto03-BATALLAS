@@ -1,0 +1,24 @@
+# Proyecto03-BATALLAS
+
+
+## Definición:
+Batallas IV es un juego de lucha con GUI estilo máquina de arcade, donde el usuario podra elegir entre 
+un plantel de 9 personajes clasifcados en 3 razas, con estadísticas diferenciadas, y sus armas disponibles. 
+
+El usuario jugará tantos combates como quiera, hasta que pierda o salga de la partida, y generará un 
+registro en el ranking. 
+
+## Instrucciones antes de la utilización: 
+- Ejecutar el script de la BBDD.
+- Ejecutar la clase main.
+
+## Instrucciones para la utilización:
+- Introducir un nombre de usuario.
+- Seleccionar un guerrero.
+- Seleccionar un arma.
+- Empezar el combate.
+
+## Información de contacto de los autores:
+- Iwo Przybyszewski iprzybyszewskifolgier.cf@iesesteveterradas.cat
+- José Miguel Rosillo jrosillonieto.cf@iesesteveterradas.cat
+- Pol Tell Jové ptelljove.cf@iesesteveterradas.cat
