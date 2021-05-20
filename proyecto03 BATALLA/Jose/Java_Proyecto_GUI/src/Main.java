@@ -1,12 +1,16 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -23,12 +27,18 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.StyleConstants;
+
+import com.mysql.cj.MysqlConnection;
 
 public class Main {
 
@@ -80,11 +90,22 @@ class Ventana {
 	private JLabel jlEnemyWeapon;
 	private ImageIcon imgEnemyBattleWeapon;
 	private boolean battleStarted = false;
+	private JPanel jpRanking;
+	private ResultSet rsRanking;
+	private DefaultTableModel model;
+	private JTable jtRanking;
+	private JFrame jfBattlesHistory;
+	private JButton jbCloseHistory;
+	private JPanel jpBattlesHistory;
+	private DefaultTableModel modelH;
+	private JTable jtBattleHistory;
+	private JButton jbBattleHistory;
+	private ResultSet rsBattleHistory;
+
 	public Ventana(ArrayList<Warrior> warriors, ArrayList<Weapon> weapons) {
 
 		this.warriors = warriors;
 		this.weapons = weapons;
-
 
 		// Window
 		// Username----------------------------------------------------------------
@@ -92,12 +113,13 @@ class Ventana {
 		jpUserName = new JPanel();
 		jbEnter = new JButton("Enter");
 		jbRanking = new JButton("Ranking");
+		jbBattleHistory = new JButton("Battles");
 		jbExit = new JButton("Exit");
 
 		// Grid Bag Layout
 		GridBagLayout gbLayout = new GridBagLayout();
 		jpUserName.setLayout(gbLayout);
-		
+
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		JLabel jlUsername = new JLabel("Username");
@@ -126,6 +148,11 @@ class Ventana {
 
 		gbc.gridx = 0;
 		gbc.gridy = 4;
+		gbLayout.setConstraints(jbBattleHistory, gbc);
+		jpUserName.add(jbBattleHistory);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 5;
 		gbLayout.setConstraints(jbExit, gbc);
 		jpUserName.add(jbExit);
 
@@ -151,16 +178,73 @@ class Ventana {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jfUserName.setVisible(false);
+				rsRanking = MySQLConnection.showRanking();
+				// reset table
+				model.setRowCount(0);
+
+				// new data
+				int row = 0;
+				try {
+					while (rsRanking.next() && row < 20) {
+						row++;
+						model.addRow(new Object[] { String.valueOf(row), rsRanking.getString(1), rsRanking.getInt(2),
+								rsRanking.getString(3) });
+					}
+				} catch (SQLException e1) {
+
+					System.out.println("Error: no data retrieved. Contact the administrator.");
+				}
+
 				jfRanking.setVisible(true);
+//				ResultSet results = MySQLConnection.showRanking();
+//				for (String result : results) {
+//					
+//					jtaRanking.append(result+"\n");
+//				}
 
 			}
 		});
 
+		jbBattleHistory.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jfUserName.setVisible(false);
+				rsBattleHistory = MySQLConnection.showBattles();
+				// reset table
+				modelH.setRowCount(0);
+				//battle_id, player_name, warrior_name, weaapon_name, oponent_name, oponent_weapon
+				// new data
+				int row = 0;
+				try {
+					while (rsBattleHistory.next() && row < 20) {
+						row++;
+						modelH.addRow(new Object[] {rsBattleHistory.getInt(1), rsBattleHistory.getString(2),
+								rsBattleHistory.getString(3), rsBattleHistory.getString(4), rsBattleHistory.getString(5),
+								rsBattleHistory.getString(6), rsBattleHistory.getInt(7), rsBattleHistory.getInt(8),
+								rsBattleHistory.getInt(9)});
+					}
+				} catch (SQLException e1) {
+
+					System.out.println("Error: no data retrieved. Contact the administrator.");
+				}
+
+				jfBattlesHistory.setVisible(true);
+
+
+			}
+		});
 		jbExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jfUserName.dispose();
+				jfBattle.dispose();
+				jfCharacter.dispose();
+				jfOptions.dispose();
+				jfWeapon.dispose();
+				jfRanking.dispose();
+				jfBattlesHistory.dispose();
 
 			}
 		});
@@ -174,6 +258,7 @@ class Ventana {
 		jfUserName.setLocationRelativeTo(null);
 
 		jfUserName.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		jfUserName.setUndecorated(true);
 
 		jfUserName.setVisible(true);
 
@@ -224,16 +309,16 @@ class Ventana {
 					JOptionPane.showMessageDialog(null, "Choose a weapon!");
 				} else {
 					System.out.println("PLAY");
-					
+
 					// Generate Random Enemy
 					getRandomEnemy();
-					
+
 					// Reset TextArea
 					jtaBattle.setText("");
-					
-					//life restart
+
+					// life restart
 					player.setLife(player.getStartingLife());
-					
+
 					// Change characters Images
 					imgEnemyBattle = new ImageIcon(bot.getUrl());
 					jlEnemyImage.setIcon(imgEnemyBattle);
@@ -265,8 +350,8 @@ class Ventana {
 					pbCharacterHealth.setMaximum(player.getStartingLife());
 					pbCharacterHealth.setValue(player.getLife());
 					pbCharacterHealth.setString(player.getLife() + "/" + player.getStartingLife());
-					
-					//Change Windows
+
+					// Change Windows
 					jfOptions.setVisible(false);
 					jfBattle.setVisible(true);
 				}
@@ -349,6 +434,8 @@ class Ventana {
 
 		jfOptions.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+		jfOptions.setUndecorated(true);
+
 		jfOptions.setVisible(false);
 
 		// Character
@@ -427,8 +514,8 @@ class Ventana {
 
 		scrollPanelCharacter = new JScrollPane(jpCharacter, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		// Adjust the displacement size of the JScrollPane 
+
+		// Adjust the displacement size of the JScrollPane
 		scrollPanelCharacter.getVerticalScrollBar().setUnitIncrement(16);
 
 		jbDwarf1.addActionListener(new ActionListener() {
@@ -533,6 +620,8 @@ class Ventana {
 
 		jfCharacter.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+		jfCharacter.setUndecorated(true);
+
 		jfCharacter.setVisible(false);
 
 		// Weapons
@@ -613,8 +702,8 @@ class Ventana {
 
 		scrollPanelWeapon = new JScrollPane(jpWeapon, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		// Adjust the displacement size of the JScrollPane 
+
+		// Adjust the displacement size of the JScrollPane
 		scrollPanelWeapon.getVerticalScrollBar().setUnitIncrement(16);
 
 		jbDagger.addActionListener(new ActionListener() {
@@ -726,6 +815,8 @@ class Ventana {
 		jfWeapon.setLocationRelativeTo(null);
 
 		jfWeapon.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+		jfWeapon.setUndecorated(true);
 
 		jfWeapon.setVisible(false);
 
@@ -914,7 +1005,7 @@ class Ventana {
 		jtaBattle.setEditable(false);
 		jtaBattle.setLineWrap(true);
 		jtaBattle.setWrapStyleWord(true);
-		DefaultCaret caret = (DefaultCaret)jtaBattle.getCaret();
+		DefaultCaret caret = (DefaultCaret) jtaBattle.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 		scrollPanelBattle = new JScrollPane(jtaBattle, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -947,6 +1038,17 @@ class Ventana {
 			}
 		});
 
+		jbFight.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				setOrder(player, bot);
+				fight(player, bot);
+
+			}
+		});
+
 		// Add panels to Battle Window
 		jfBattle.add(jpBattleEnemy);
 		jfBattle.add(jpBattleCharacter);
@@ -960,13 +1062,29 @@ class Ventana {
 		jfBattle.setResizable(false);
 		jfBattle.setLocationRelativeTo(null);
 		jfBattle.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		jfBattle.setUndecorated(true);
 		jfBattle.setVisible(false);
 
-		// Ranking Window
+		// Ranking
+		// Window------------------------------------------------------------------------------------------
 
 		jfRanking = new JFrame();
 
 		jbClose = new JButton("Close");
+
+		jpRanking = new JPanel();
+		jpRanking.setLayout(new BorderLayout());
+		model = new DefaultTableModel();
+		jtRanking = new JTable(model);
+		jtRanking.setShowGrid(false);
+		model.addColumn("Position");
+		model.addColumn("Player Name");
+		model.addColumn("Battle Points");
+		model.addColumn("Warrior Name");
+		// Append a row
+
+		jpRanking.add(jtRanking.getTableHeader(), BorderLayout.NORTH);
+		jpRanking.add(jtRanking, BorderLayout.CENTER);
 
 		jbClose.addActionListener(new ActionListener() {
 
@@ -978,55 +1096,57 @@ class Ventana {
 			}
 		});
 
-		jbFight.addActionListener(new ActionListener() {
+		jfRanking.add(jbClose, BorderLayout.SOUTH);
+		jfRanking.add(jpRanking, BorderLayout.CENTER);
+		jfRanking.setSize(600, 375);
+		jfRanking.setResizable(false);
+		jfRanking.setLocationRelativeTo(null);
+		jfRanking.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		jfRanking.setUndecorated(true);
+		jfRanking.setVisible(false);
 
-			
+		// Battles History
+		// Window------------------------------------------------------------------------------------------
+
+		jfBattlesHistory = new JFrame();
+		
+		jbCloseHistory = new JButton("Close");
+
+		jpBattlesHistory = new JPanel();
+		jpBattlesHistory.setLayout(new BorderLayout());
+		modelH = new DefaultTableModel();
+		jtBattleHistory = new JTable(modelH);
+		jtBattleHistory.setShowGrid(false);
+		modelH.addColumn("Battle");
+		modelH.addColumn("Player Name");
+		modelH.addColumn("Warrior Name");
+		modelH.addColumn("Weapon Name");
+		modelH.addColumn("Oponent Name");
+		modelH.addColumn("Oponent Weapon");
+		modelH.addColumn("Injuries Caused");
+		modelH.addColumn("Injuries Suffered");
+		modelH.addColumn("Battle points");
+		jpBattlesHistory.add(jtBattleHistory.getTableHeader(), BorderLayout.NORTH);
+		jpBattlesHistory.add(jtBattleHistory, BorderLayout.CENTER);
+
+		jbCloseHistory.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if (battleStarted == false){
-					battleStarted = true;
-					fights++;
-				}
-				setOrder(player, bot);
-				fight(player, bot);
-				
-				
-//				fights++;
-//				System.out.println(fights);
-//				setOrder(player, bot);
-//				fight(player, bot);
-//				
-//				int injuries_caused = Math.abs(bot.getLife() - bot.getStartingLife());
-//				// injuries_caused = Math.abs(injuries_caused);
-//				System.out.println("injuries caused " + injuries_caused);
-//				int injuries_suffered = Math.abs(player.getLife() - player.getStartingLife());
-//				System.out.println("injuries suffered " + injuries_suffered);
-//				int battle_points = Math.abs(((player.getLife() + injuries_caused) * 100) - injuries_suffered);
-//				System.out.println("battle_points " + battle_points);
-//				total_points = total_points + battle_points;
-//
-//				if (fights == 1) {
-//					MySQLConnection.loadData(userName, player, bot, injuries_caused, injuries_suffered, battle_points,
-//							total_points);
-//				} else {
-//					MySQLConnection.updateData(player, bot, injuries_caused, injuries_suffered, battle_points,
-//							total_points);
-//				}
-//				
-//				System.out.println("Partida terminada");
+				jfBattlesHistory.setVisible(false);
+				jfUserName.setVisible(true);
 
 			}
 		});
 
-		jfRanking.add(jbClose, BorderLayout.SOUTH);
-
-		jfRanking.setSize(600, 600);
-		jfRanking.setResizable(false);
-		jfRanking.setLocationRelativeTo(null);
-		jfRanking.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		jfRanking.setVisible(false);
+		jfBattlesHistory.add(jbCloseHistory, BorderLayout.SOUTH);
+		jfBattlesHistory.add(jpBattlesHistory, BorderLayout.CENTER);
+		jfBattlesHistory.setSize(950, 375);
+		jfBattlesHistory.setResizable(false);
+		jfBattlesHistory.setLocationRelativeTo(null);
+		jfBattlesHistory.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		jfBattlesHistory.setUndecorated(true);
+		jfBattlesHistory.setVisible(false);
 
 	}
 
@@ -1044,7 +1164,7 @@ class Ventana {
 		bot.setWeapon(weapons.get(indexWeapon));
 		bot.setLife(bot.getStartingLife());
 	}
-	
+
 	private int setOrder(Warrior player, Warrior bot) {
 		if (player.getSpeed() > bot.getSpeed()) {
 			return 0;
@@ -1065,25 +1185,24 @@ class Ventana {
 			}
 		}
 	}
-	
+
 	private void playTurn(Warrior player, Warrior bot) {
-		
-		jtaBattle.append("\n" +new String(new char[22])
-				.replace("\0","=") + " " + String.format("%-16s", (player.getName() + "'s turn "
-				.replace(' ', '?'))).replace(' ','=').replace('?', ' ') +new String(new char[21]).replace("\0","="));
-		jtaBattle.append("\n"+bot.getDefend(player, player.getAttack()));
+
+		jtaBattle.append("\n" + new String(new char[22]).replace("\0", "=") + " " + String
+				.format("%-16s", (player.getName() + "'s turn ".replace(' ', '?'))).replace(' ', '=').replace('?', ' ')
+				+ new String(new char[21]).replace("\0", "="));
+		jtaBattle.append("\n" + bot.getDefend(player, player.getAttack()));
 		jtaBattle.append("\n\n");
 	}
-	
+
 	private void playTurnBot(Warrior bot, Warrior player) {
-		jtaBattle.append("\n"+new String(new char[22])
-				.replace("\0","=") + " " + String.format("%-16s", (bot.getName() + "'s turn ".replace(' ', '?')))
-				.replace(' ','=').replace('?', ' ') +new String(new char[21]).replace("\0","="));
-		jtaBattle.append("\n"+player.getDefend(bot, bot.getAttack()));
+		jtaBattle.append("\n" + new String(new char[22]).replace("\0", "=") + " " + String
+				.format("%-16s", (bot.getName() + "'s turn ".replace(' ', '?'))).replace(' ', '=').replace('?', ' ')
+				+ new String(new char[21]).replace("\0", "="));
+		jtaBattle.append("\n" + player.getDefend(bot, bot.getAttack()));
 		jtaBattle.append("\n\n");
 	}
-	
-	
+
 	private int changeTurn(Warrior player, Warrior bot, int order, int turn) {
 		// if (order%2 == 0) {
 		if (player.getSpeed() <= bot.getSpeed()) {
@@ -1113,7 +1232,7 @@ class Ventana {
 		 * player.getName() + "!! Tiene otra oportunidad de ataque!"); } } }
 		 */
 	}
-	
+
 	protected static int changeTurnBot(Warrior bot, Warrior player, int order, int turn) {
 		if (bot.getSpeed() <= player.getSpeed()) {
 			order++;
@@ -1125,40 +1244,39 @@ class Ventana {
 				turn++;
 			} else { // En caso que no se cumplan las condiciones de cambio el personaje puede atacar
 						// de nuevo.
-				System.out.println(bot.getName() + " is faster than " + player.getName()
-						+ "!! Has another chance to attack!!");
+				System.out.println(
+						bot.getName() + " is faster than " + player.getName() + "!! Has another chance to attack!!");
 			}
 		}
 		return order;
 	}
-	
+
 	private void fight(Warrior player, Warrior bot) {
 
-		
-			if (order % 2 == 0 && (player.getLife() > 0 & bot.getLife() > 0)) {
-				turn++;
-				jtaBattle.append("\nTurn " + turn);
+		if (order % 2 == 0 && (player.getLife() > 0 & bot.getLife() > 0)) {
+			turn++;
+			jtaBattle.append("\nTurn " + turn);
 //				System.out.println("Order " + order);
-				playTurn(player, bot);
-				order = changeTurn(player, bot, order, turn);
-			}
-			if (order % 2 == 1 && (player.getLife() > 0 & bot.getLife() > 0)) {
-				turn++;
-				jtaBattle.append("\nTurn " + turn);
+			playTurn(player, bot);
+			order = changeTurn(player, bot, order, turn);
+		}
+		if (order % 2 == 1 && (player.getLife() > 0 & bot.getLife() > 0)) {
+			turn++;
+			jtaBattle.append("\nTurn " + turn);
 //				System.out.println("Order " + order);
-				playTurnBot(bot, player);
-				order = changeTurnBot(bot, player, order, turn);
-			}
-			
-			// Change progress Bar
-			pbCharacterHealth.setValue(player.getLife());
-			pbCharacterHealth.setString(player.getLife() + "/" + player.getStartingLife());
-			pbEnemyHealth.setValue(bot.getLife());
-			pbEnemyHealth.setString(bot.getLife() + "/" + bot.getStartingLife());
+			playTurnBot(bot, player);
+			order = changeTurnBot(bot, player, order, turn);
+		}
 
-			// If someone dies
+		// Change progress Bar
+		pbCharacterHealth.setValue(player.getLife());
+		pbCharacterHealth.setString(player.getLife() + "/" + player.getStartingLife());
+		pbEnemyHealth.setValue(bot.getLife());
+		pbEnemyHealth.setString(bot.getLife() + "/" + bot.getStartingLife());
+
+		// If someone dies
 		if (!(player.getLife() > 0 & bot.getLife() > 0)) {
-			
+
 			int injuries_caused = Math.abs(bot.getLife() - bot.getStartingLife());
 			// injuries_caused = Math.abs(injuries_caused);
 			System.out.println("injuries caused " + injuries_caused);
@@ -1167,83 +1285,83 @@ class Ventana {
 			int battle_points = Math.abs(((player.getLife() + injuries_caused) * 100) - injuries_suffered);
 			System.out.println("battle_points " + battle_points);
 			total_points = total_points + battle_points;
-			
-			if (fights == 1) {
-			MySQLConnection.loadData(userName, player, bot, injuries_caused, injuries_suffered, battle_points,
-					total_points);
+
+			if (this.battleStarted == false) {
+				this.battleStarted = true;
+				MySQLConnection.loadData(userName, player, bot, injuries_caused, injuries_suffered, battle_points,
+						total_points);
 			} else {
-			MySQLConnection.updateData(player, bot, injuries_caused, injuries_suffered, battle_points,
-					total_points);
+				MySQLConnection.updateData(player, bot, injuries_caused, injuries_suffered, battle_points,
+						total_points);
 			}
-			
-			
+
 //			System.out.println("Combat Result");
 			if (player.getLife() > bot.getLife()) {
-				
-				String[] options = {"Keep fighting", "Exit"};
-				int option = JOptionPane.showOptionDialog(null, "You Won! Total points: "+total_points,
-						"Battle result",
-						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+				String[] options = { "Keep fighting", "Exit" };
+				int option = JOptionPane.showOptionDialog(null, "You Won! Total points: " + total_points,
+						"Battle result", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
+						options[0]);
 				if (option == 0) {
 					jfBattle.setVisible(false);
 					jfOptions.setVisible(true);
 					order = 0;
 					turn = 0;
-				}else if (option == 1) {
+				} else if (option == 1) {
 					jfBattle.setVisible(false);
 					jfUserName.setVisible(true);
 					this.player.setWeapon(null);
 					this.player = null;
+					this.battleStarted = false;
 					total_points = 0;
-					fights = 0; 
-					order = 0; 
+					order = 0;
 					turn = 0;
-				}else {
+				} else {
 					jfBattle.setVisible(false);
 					jfUserName.setVisible(true);
 					this.player.setWeapon(null);
 					this.player = null;
-					total_points = 0;
-					fights = 0; 
-					order = 0; 
+					this.battleStarted = false;
+					fights = 0;
+					order = 0;
 					turn = 0;
 				}
 			} else {
 				System.out.println("\n" + bot.getName() + " wins!\n");
-				
-				String[] options = {"Fight Again?", "Exit"};
-				int option = JOptionPane.showOptionDialog(null, "You Lose! Total points: "+total_points,
-						"Battle result",
-						JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+
+				String[] options = { "Fight Again?", "Exit" };
+				int option = JOptionPane.showOptionDialog(null, "You Lose! Total points: " + total_points,
+						"Battle result", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options,
+						options[0]);
 				if (option == 0) {
 					jfBattle.setVisible(false);
 					jfOptions.setVisible(true);
 					player.setLife(player.getStartingLife());
+					total_points = 0;
 					order = 0;
 					turn = 0;
-					total_points = 0;
-				}else if (option == 1) {
+				} else if (option == 1) {
 					jfBattle.setVisible(false);
 					jfUserName.setVisible(true);
 					this.player.setWeapon(null);
 					this.player = null;
+					this.battleStarted = false;
 					total_points = 0;
-					fights = 0; 
-					order = 0; 
+					order = 0;
 					turn = 0;
-				}else {
+				} else {
 					jfBattle.setVisible(false);
 					jfUserName.setVisible(true);
 					this.player.setWeapon(null);
 					this.player = null;
+					this.battleStarted = false;
 					total_points = 0;
-					fights = 0; 
-					order = 0; 
+					order = 0;
 					turn = 0;
 				}
-				
+
 			}
-			}
+		}
 
 	}
 

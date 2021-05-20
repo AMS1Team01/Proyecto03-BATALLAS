@@ -276,27 +276,43 @@ public class MySQLConnection {
 	 * 
 	 */
 	
-	public static void showRanking() {
+	public static ResultSet showRanking() {
 		int row = 0;
 		String query = "select players.player_name, ranking.total_points, warriors.warrior_name, players.player_id "
 				+ "from players "
 				+ "inner join ranking on players.player_id = ranking.player_id "
 				+ "inner join warriors on ranking.warrior_id = warriors.warrior_id "
 				+ "order by total_points desc;";
-		try {
-			rs = stmnt.executeQuery(query);
-			System.out.println(String.format("%-15s", "Position:") + String.format("%-25s", "Player Name") + String.format("%-15s", "Battle Points") + String.format("%-20s", "Warrior Name") + String.format("%-15s", "Player ID"));
-			while (rs.next()) {
-				row++;
-				System.out.println(String.format("%-15s", row) + String.format("%-25s", rs.getString(1)) + String.format("%-15s", rs.getInt(2)) + String.format("%-20s", rs.getString(3)) + String.format("%-15s", rs.getInt(4)));
-
-			}
-		} catch (SQLException e) {
-			System.out.println("Ha ocurrido un error al realizar la consulta. Contacte con el desarrollador Pol Tell Jove");
-			e.printStackTrace();
-		}
-	}
+		
+			try {
+				rs = stmnt.executeQuery(query);
+			} catch (SQLException e) {
+				System.out.println("Error: contact the administrator.");
+			}return rs;
+			
+		}	
 	
+	public static ResultSet showBattles() {
+		int row = 0;
+		String query = "select battle_id, (select player_name from players where battles.player_id = players.player_id) as "
+				+ "Player, (select warrior_name from warriors where battles.warrior_id = warriors.warrior_id) as"
+				+ " Warrior,(select weapon_name from weapons where battles.weapon_id = weapons.weapon_id) as "
+				+ "Weapon,(select warrior_name from warriors where battles.opponent_id = warriors.warrior_id) as "
+				+ "Opponent,(select weapon_name from weapons where battles.opponent_weapon_id = weapons.weapon_id) as "
+				+ "Opponents_weapon, injuries_caused, injuries_suffered, battle_points from battles";
+				
+				//injuries_caused, injuries_suffered, battle_points
+			try {
+				rs = stmnt.executeQuery(query);
+			} catch (SQLException e) {
+				System.out.println("Error: contact the administrator.");
+			}return rs;
+			
+		}	
+		
+	
+	
+
 	/* Main method as a test for the Class functionality and testing only, as it will be implemented in its own way in the main application method*/
 	
 	public static void main(String[] args) {
